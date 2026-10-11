@@ -1,20 +1,16 @@
-/* Alfabetizando (app Android e iPhone): bloqueio das trilhas e compra dentro do app.
+/* Alfabetizando (app Android): bloqueio das trilhas e compra dentro do app.
    Regra: a Trilha do Meu Nome é toda grátis; nas outras, os itens 1, 2 e 3
    ficam abertos e, do item 4 em diante
-   aparece um cadeado até a compra única "Trilhas completas" na Google Play
-   (Android) ou na App Store (iPhone).
+   aparece um cadeado até a compra única "Trilhas completas" na Google Play.
    Este arquivo é injetado no fim de cada página pelo scripts/montar-www.mjs. */
 (function () {
   'use strict';
 
-  var PRODUTO = 'trilhas_completas';   // mesmo ID cadastrado no Play Console e no App Store Connect
+  var PRODUTO = 'trilhas_completas';   // mesmo ID cadastrado no Play Console
   var GRATIS = 3;                      // itens abertos por trilha
   var TRILHA_LIVRE = /(^|\/)trilha\.html$/;   // Trilha do Meu Nome: inteira grátis
   var CHAVE = 'alf:premium';
-  var PRECO_PADRAO = 'R$ 19,90';       // preço cadastrado nas lojas; a loja manda o valor oficial
-  var IOS = !!(window.Capacitor && window.Capacitor.getPlatform && window.Capacitor.getPlatform() === 'ios');
-  var CONTA = IOS ? 'nesta conta Apple' : 'nesta conta Google';
-  var SO_NA_LOJA = 'A compra só funciona no aplicativo instalado pela ' + (IOS ? 'App Store.' : 'Google Play.');
+  var PRECO_PADRAO = 'R$ 19,90';       // preço cadastrado no Play Console; a loja manda o valor oficial
 
   function liberado() { try { return localStorage.getItem(CHAVE) === '1'; } catch (e) { return false; } }
   function marcarLiberado() {
@@ -25,7 +21,7 @@
     var b = document.getElementById('alfBtnHub'); if (b) b.remove();
   }
 
-  /* ---------- Google Play Billing / App Store (cordova-plugin-purchase) ---------- */
+  /* ---------- Google Play Billing (cordova-plugin-purchase) ---------- */
   var loja = null, pronta = null;
   function iniciarLoja() {
     if (pronta) return pronta;
@@ -33,15 +29,14 @@
       function iniciar() {
         if (!window.CdvPurchase) { ok(null); return; }
         var P = window.CdvPurchase, store = P.store;
-        var plataforma = IOS ? P.Platform.APPLE_APPSTORE : P.Platform.GOOGLE_PLAY;
-        store.register([{ id: PRODUTO, type: P.ProductType.NON_CONSUMABLE, platform: plataforma }]);
+        store.register([{ id: PRODUTO, type: P.ProductType.NON_CONSUMABLE, platform: P.Platform.GOOGLE_PLAY }]);
         store.when()
           .approved(function (t) { t.verify(); })
           .verified(function (r) { r.finish(); })
           .finished(function () { if (temCompra(store)) marcarLiberado(); })
           .receiptUpdated(function () { if (temCompra(store)) marcarLiberado(); })
           .productUpdated(function () { mostrarPreco(); });
-        store.initialize([plataforma]).then(function () {
+        store.initialize([P.Platform.GOOGLE_PLAY]).then(function () {
           loja = store; if (temCompra(store)) marcarLiberado(); ok(store);
         }, function () { ok(null); });
       }
@@ -121,7 +116,7 @@
     cx.innerHTML = '';
     cx.appendChild(el('div', 'alf-ic', '🎁'));
     cx.appendChild(el('h2', null, 'Libere todas as trilhas'));
-    cx.appendChild(el('p', null, 'A Trilha do Meu Nome é toda grátis, e nas outras os itens 1, 2 e 3 também. Com uma compra única, as 10 trilhas ficam liberadas por completo, para sempre, ' + CONTA + '.'));
+    cx.appendChild(el('p', null, 'A Trilha do Meu Nome é toda grátis, e nas outras os itens 1, 2 e 3 também. Com uma compra única, as 10 trilhas ficam liberadas por completo, para sempre, nesta conta Google.'));
     cx.appendChild(el('p', 'alf-preco'));
     var msg = el('div', 'alf-msg');
     var comprar = el('button', 'alf-b alf-comprar'); comprar.type = 'button';
@@ -131,15 +126,15 @@
       msg.textContent = '';
       iniciarLoja().then(function (store) {
         var p = store && store.get(PRODUTO), o = p && p.getOffer();
-        if (!o) { msg.textContent = store ? 'A loja ainda não respondeu. Verifique a internet e tente de novo.' : SO_NA_LOJA; return; }
+        if (!o) { msg.textContent = store ? 'A loja ainda não respondeu. Verifique a internet e tente de novo.' : 'A compra só funciona no aplicativo instalado pela Google Play.'; return; }
         o.order().then(function (err) { if (err && err.code !== window.CdvPurchase.ErrorCode.PAYMENT_CANCELLED) msg.textContent = 'Não foi possível concluir a compra. Tente de novo.'; });
       });
     };
     restaurar.onclick = function () {
       msg.textContent = 'Procurando sua compra…';
       iniciarLoja().then(function (store) {
-        if (!store) { msg.textContent = SO_NA_LOJA; return; }
-        store.restorePurchases().then(function () { msg.textContent = temCompra(store) ? '' : 'Não encontramos compra ' + CONTA + '.'; if (temCompra(store)) marcarLiberado(); });
+        if (!store) { msg.textContent = 'A compra só funciona no aplicativo instalado pela Google Play.'; return; }
+        store.restorePurchases().then(function () { msg.textContent = temCompra(store) ? '' : 'Não encontramos compra nesta conta Google.'; if (temCompra(store)) marcarLiberado(); });
       });
     };
     [comprar, restaurar, fechar, msg].forEach(function (n) { cx.appendChild(n); });

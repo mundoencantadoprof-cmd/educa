@@ -1,5 +1,5 @@
 # Gera o app do Alfabetizando para iPhone (App Store).
-# - A cada mudança na pasta do app: só confere se o app para iPhone compila.
+# - A cada mudança na pasta app-alfabetizando-iphone/: só confere se o app para iPhone compila.
 # - Ao clicar em "Run workflow" (Actions > App iPhone > Run workflow): gera a
 #   versão assinada e envia para o App Store Connect (aparece no TestFlight).
 #   Precisa dos segredos do repositório: APPLE_TEAM_ID, ASC_KEY_ID,
@@ -9,8 +9,7 @@ name: App iPhone
 on:
   push:
     paths:
-      - 'app-alfabetizando/**'
-      - '!app-alfabetizando/android/**'
+      - 'app-alfabetizando-iphone/**'
       - '.github/workflows/app-ios.yml'
   workflow_dispatch:
 
@@ -19,7 +18,7 @@ jobs:
     runs-on: macos-26
     defaults:
       run:
-        working-directory: app-alfabetizando
+        working-directory: app-alfabetizando-iphone
     env:
       ENVIAR: ${{ github.event_name == 'workflow_dispatch' }}
     steps:
@@ -31,11 +30,11 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run sync:ios
+      - run: npm run sync
 
       - name: Conferir se compila (sem assinatura)
         if: env.ENVIAR != 'true'
-        working-directory: app-alfabetizando/ios/App
+        working-directory: app-alfabetizando-iphone/ios/App
         run: |
           xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
             -destination 'generic/platform=iOS Simulator' \
@@ -44,7 +43,7 @@ jobs:
 
       - name: Gerar e enviar para o App Store Connect
         if: env.ENVIAR == 'true'
-        working-directory: app-alfabetizando/ios/App
+        working-directory: app-alfabetizando-iphone/ios/App
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}

@@ -2,18 +2,15 @@
   "name": "alfabetizando-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Alfabetizando (Brincando com as Letras) como app Android (Google Play) e iPhone (App Store)",
+  "description": "Alfabetizando (Brincando com as Letras) como app Android para a Google Play",
   "scripts": {
     "montar": "node scripts/montar-www.mjs",
     "sync": "npm run montar && npx cap sync android",
-    "abrir": "npx cap open android",
-    "sync:ios": "npm run montar && npx cap sync ios",
-    "abrir:ios": "npx cap open ios"
+    "abrir": "npx cap open android"
   },
   "dependencies": {
     "@capacitor/android": "^8.5.3",
     "@capacitor/core": "^8.5.3",
-    "@capacitor/ios": "^8.5.3",
     "cordova-plugin-purchase": "^13.18.0"
   },
   "devDependencies": {
