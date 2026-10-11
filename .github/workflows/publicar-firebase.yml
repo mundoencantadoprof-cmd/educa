@@ -1,0 +1,31 @@
+# Publica o site no Firebase Hosting (projeto mundo-encantado-77c43) a cada mudança na main.
+# Precisa do segredo FIREBASE_SERVICE_ACCOUNT (chave JSON da conta de serviço) nas configurações do repositório.
+name: Publicar no Firebase
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "app-alfabetizando/**"
+      - ".github/workflows/app-android.yml"
+  workflow_dispatch:
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    env:
+      CHAVE: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Separar os arquivos do site
+        run: |
+          mkdir _site
+          git ls-files | grep -vE '^(CNAME|firebase\.json|\.github/|app-alfabetizando/)' | while read -r f; do
+            mkdir -p "_site/$(dirname "$f")"; cp "$f" "_site/$f"
+          done
+      - name: Publicar
+        if: ${{ env.CHAVE != '' }}
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: mundo-encantado-77c43
+          channelId: live

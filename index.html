@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Coleção Mundo Encantado</title>
+<meta name="description" content="Seis mundos de brincadeiras para crianças de 4 e 5 anos: letras, números, cultura, natureza, emoções e saúde.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&family=Pacifico&display=swap">
+<style>
+/* Página principal da Coleção Mundo Encantado: um mapa ilustrado onde a criança toca num mundo,
+   a fadinha Lumi voa até lá e conta o que tem. Abaixo, a parte para os adultos. */
+:root{
+  --bg:#E6F7F8; --surface:#FFFFFF; --ink:#1B2A5E; --muted:#55628A; --line:#B5DFE4;
+  --rosa:#EE4F7B; --laranja:#F7A823; --verde:#3FA535; --azul:#2490D6; --roxo:#8752C8; --turquesa:#16A3B0;
+  --display:"Baloo 2",Nunito,system-ui,sans-serif; --texto:Nunito,system-ui,sans-serif; --script:Pacifico,"Segoe Script",cursive;
+}
+@media (prefers-color-scheme: dark){:root{--bg:#101830;--surface:#1F2A47;--ink:#F2F6FF;--muted:#AAB8D4;--line:#33426A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:600 17px/1.55 var(--texto)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:4px solid var(--laranja);outline-offset:3px}
+
+/* topo: o mesmo das Letras (marca, título colorido, botões com borda de cor e faixa de arco-íris) */
+.topo-site{background:var(--surface);box-shadow:0 4px 0 color-mix(in srgb,var(--turquesa) 18%,transparent);margin-bottom:18px}
+.topo-site::after{content:"";display:block;height:6px;background:linear-gradient(90deg,var(--rosa) 0 16.6%,var(--laranja) 0 33.3%,var(--verde) 0 50%,var(--azul) 0 66.6%,var(--roxo) 0 83.3%,var(--turquesa) 0)}
+.barra{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px;max-width:1180px;margin:0 auto;padding:8px 16px}
+.marca{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,28px);line-height:1.05;text-decoration:none;color:var(--ink)}
+.marca img{width:64px;height:64px;border-radius:16px;flex:none}
+.marca .bname{display:grid}
+.marca i{font-style:normal}
+.marca small{font-family:var(--script);font-weight:400;font-size:.58em;color:var(--turquesa)}
+.som{width:46px;height:46px;border-radius:50%;border:0;background:#D0EEF1;font-size:24px;display:grid;place-items:center;cursor:pointer;padding:0}
+.som[aria-pressed="false"]{opacity:.6}
+.som[aria-pressed="false"] .on{display:none}.som[aria-pressed="true"] .off{display:none}
+
+/* mapa */
+.palco{max-width:1180px;margin:0 auto;padding:0 12px}
+.mapa{position:relative;width:100%;aspect-ratio:var(--ar,1000/620);border-radius:32px;overflow:hidden;box-shadow:0 10px 0 rgba(27,42,94,.10),0 18px 40px rgba(27,42,94,.18);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.mapa>svg.fundo{position:absolute;inset:0;width:100%;height:100%}
+.titulo{position:absolute;left:0;right:0;top:2.2%;text-align:center;pointer-events:none;z-index:3}
+.titulo h1{margin:0;font-family:var(--display);font-weight:800;font-size:clamp(28px,5.2vw,60px);line-height:1;color:#fff;text-shadow:0 3px 0 #1B6FB0,0 6px 14px rgba(20,60,120,.35);letter-spacing:.5px}
+.logo-mapa{display:block;margin:0 auto;width:clamp(84px,11vw,124px);height:auto;border-radius:22%;background:#fff;box-shadow:0 0 0 4px #fff,0 8px 0 4px rgba(27,42,94,.12),0 14px 26px rgba(20,60,120,.25);animation:pula 3.2s ease-in-out infinite}
+.titulo h1 span{display:inline-block;animation:pula 3.2s ease-in-out infinite}
+.titulo p{margin:6px auto 0;display:inline-block;background:#fff;color:#1B2A5E;border-radius:999px;padding:4px 14px;font-weight:800;font-size:clamp(13px,1.6vw,16px);box-shadow:0 3px 0 rgba(27,42,94,.15)}
+@keyframes pula{0%,80%,100%{transform:translateY(0)}88%{transform:translateY(-8px)}}
+
+.mundo{position:absolute;z-index:4;width:var(--mw,19%);transform:translate(-50%,-62%);background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mundo svg{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 6px 0 rgba(30,70,40,.18));transition:transform .25s}
+.mundo:hover svg{transform:translateY(-6px) scale(1.04)}
+.mundo.escolhido svg{animation:boing .6s}
+@keyframes boing{0%{transform:scale(1)}30%{transform:scale(1.14,.9)}55%{transform:scale(.94,1.08)}80%{transform:scale(1.03,.98)}100%{transform:scale(1)}}
+.nome{position:absolute;left:50%;top:100%;transform:translate(-50%,2px);width:max-content;max-width:150%;text-align:center;text-wrap:balance;background:#fff;color:#1B2A5E;border-radius:14px;padding:3px 12px 4px;font:800 clamp(12px,1.4vw,15.5px)/1.3 var(--texto);box-shadow:0 0 0 2.5px var(--cor),0 4px 0 2.5px color-mix(in srgb,var(--cor) 55%,#1B2A5E),0 8px 14px rgba(27,42,94,.18)}
+.mundo:hover .nome,.mundo.escolhido .nome{background:var(--cor);color:#fff}
+/* mundos que ainda não estão prontos: um pouco mais suaves, com um selo pequeno */
+.mundo.breve svg{filter:saturate(.92) drop-shadow(0 6px 0 rgba(30,70,40,.14))}
+.mundo.breve:hover svg,.mundo.breve.escolhido svg{filter:drop-shadow(0 6px 0 rgba(30,70,40,.18))}
+.placa{position:absolute;left:50%;top:-2%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:4px;white-space:nowrap;background:rgba(255,255,255,.92);color:#55628A;border-radius:999px;padding:1px 9px 1px 6px;font:800 clamp(9.5px,1vw,12px)/1.6 var(--texto);letter-spacing:.2px;box-shadow:0 2px 6px rgba(27,42,94,.16)}
+.placa svg{width:1.15em;height:1.15em;flex:none;filter:none!important}
+/* o mundo que já dá para jogar brilha e chama */
+.mundo.pronto::before{content:"";position:absolute;left:50%;top:48%;width:135%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,240,170,.95) 0,rgba(255,226,122,.55) 38%,rgba(255,226,122,0) 68%);z-index:-1;animation:aura 2.6s ease-in-out infinite;pointer-events:none}
+@keyframes aura{0%,100%{opacity:.75;transform:translate(-50%,-50%) scale(.92)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}}
+.jogar{position:absolute;left:50%;top:-6%;transform:translateX(-50%);display:inline-flex;align-items:center;gap:5px;white-space:nowrap;background:#3FA535;color:#fff;border-radius:999px;padding:2px 12px 3px 9px;font:800 clamp(11px,1.25vw,15px)/1.4 var(--texto);box-shadow:0 3px 0 #2B7A24,0 6px 12px rgba(27,42,94,.2);animation:chama 1.6s ease-in-out infinite}
+@keyframes chama{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-5px)}}
+
+.rabisco{position:absolute;z-index:6;width:calc(var(--rw,6.5%) * 1.84);transform:translate(-50%,-90%);transition:left .42s ease-in-out,top .42s ease-in-out;pointer-events:none;color:#1B2A5E}
+.rabisco svg{width:100%;height:auto;display:block}
+.rabisco svg{animation:flutua 2.4s ease-in-out infinite alternate}
+.rabisco.andando svg{animation:voa .42s ease-in-out infinite alternate}
+@keyframes flutua{from{transform:translateY(0)}to{transform:translateY(-6%)}}
+@keyframes voa{from{transform:translateY(-4%) rotate(-4deg)}to{transform:translateY(-14%) rotate(4deg)}}
+.rabisco .asa-e,.rabisco .asa-d{transform-box:fill-box;transform-origin:100% 50%;animation:bate .32s ease-in-out infinite alternate}
+.rabisco.andando .asa-e,.rabisco.andando .asa-d{animation-duration:.12s}
+@keyframes bate{to{transform:scaleX(.8)}}
+@media (prefers-reduced-motion: reduce){.rabisco svg,.rabisco .asa-e,.rabisco .asa-d{animation:none!important}}
+.rabisco .a-up,.rabisco .ey-joy{display:none}
+.rabisco.feliz .a-up,.rabisco.feliz .ey-joy{display:inline}.rabisco.feliz .a-idle,.rabisco.feliz .ey{display:none}
+.a-wave{transform-origin:49px 86px;animation:acena 1.4s ease-in-out infinite}
+@keyframes acena{50%{transform:rotate(22deg)}}
+.balao{position:absolute;z-index:7;width:max-content;max-width:min(320px,62%);background:#fff;color:#1B2A5E;border-radius:18px;padding:9px 15px;font:800 clamp(13px,1.45vw,16.5px)/1.35 var(--texto);transform:translate(-50%,-100%) scale(.92);transform-origin:var(--cauda,50%) 100%;opacity:0;transition:opacity .25s,transform .25s,left .42s,top .42s;pointer-events:none;box-shadow:0 0 0 2.5px #8752C8,0 10px 22px rgba(27,42,94,.22)}
+.balao::after{content:"";position:absolute;top:100%;left:var(--cauda,50%);width:16px;height:16px;background:#fff;transform:translate(-50%,-9px) rotate(45deg);box-shadow:2.5px 2.5px 0 0 #8752C8;border-radius:0 0 4px 0}
+.balao.mostra{opacity:1;transform:translate(-50%,-100%) scale(1)}
+
+.nuvem{animation:vento linear infinite}
+@keyframes vento{from{transform:translateX(-260px)}to{transform:translateX(1260px)}}
+.sol-raios{transform-box:fill-box;transform-origin:center;animation:gira 30s linear infinite}
+.roda{transform-box:fill-box;transform-origin:center;animation:gira 16s linear infinite}
+.roda .cab{transform-box:fill-box;transform-origin:center;animation:gira 16s linear infinite reverse}
+.ciranda{transform-box:fill-box;transform-origin:center;animation:gira 22s linear infinite}
+.ciranda .pe{transform-box:fill-box;transform-origin:center;animation:gira 22s linear infinite reverse}
+@keyframes gira{to{transform:rotate(360deg)}}
+.brilho{transform-box:fill-box;transform-origin:center;animation:pisca 2.4s ease-in-out infinite}
+@keyframes pisca{0%,100%{opacity:.15;transform:scale(.6)}50%{opacity:1;transform:scale(1)}}
+.borboleta{animation:voa 9s ease-in-out infinite}
+.borboleta .asa{transform-box:fill-box;transform-origin:right center;animation:bate .25s ease-in-out infinite alternate}
+@keyframes bate{to{transform:scaleX(.3)}}
+@keyframes voa{0%,100%{transform:translate(0,0)}25%{transform:translate(40px,-25px)}50%{transform:translate(80px,5px)}75%{transform:translate(30px,20px)}}
+.passaro{animation:passaro 18s linear infinite}
+@keyframes passaro{from{transform:translateX(-120px)}to{transform:translateX(1150px)}}
+.bandeira{transform-box:fill-box;transform-origin:left center;animation:tremula 1s ease-in-out infinite alternate}
+@keyframes tremula{to{transform:skewY(8deg) scaleX(.9)}}
+.folhas{transform-box:fill-box;transform-origin:50% 100%;animation:balanca 3s ease-in-out infinite alternate}
+@keyframes balanca{from{transform:rotate(-2deg)}to{transform:rotate(2deg)}}
+.sobe-item{transform-box:fill-box;transform-origin:center;animation:flutua 2.4s ease-in-out infinite alternate}
+@keyframes flutua{from{transform:translateY(4px)}to{transform:translateY(-6px)}}
+.onibus{animation:anda 6s ease-in-out infinite alternate}
+@keyframes anda{from{transform:translateX(-4px)}to{transform:translateX(30px)}}
+.flor{transform-box:fill-box;transform-origin:center;animation:balanca 2.2s ease-in-out infinite alternate}
+.pula{transform-box:fill-box;transform-origin:50% 100%;animation:quica 1.6s ease-in-out infinite}
+@keyframes quica{0%,100%{transform:translateY(0) scale(1,1)}40%{transform:translateY(-10px) scale(.97,1.03)}80%{transform:translateY(0) scale(1.05,.95)}}
+.bolha{transform-box:fill-box;transform-origin:center;animation:bolha 2s ease-in infinite}
+@keyframes bolha{0%{transform:translateY(0);opacity:1}100%{transform:translateY(-70px);opacity:0}}
+.pincel{transform-box:fill-box;transform-origin:center;animation:balanca 1.2s ease-in-out infinite alternate}
+.estrela-voa{position:absolute;z-index:8;pointer-events:none;font-size:22px;animation:sobe .9s ease-out forwards}
+@keyframes sobe{to{transform:translate(var(--dx),-70px) scale(.4);opacity:0}}
+
+/* painel que aparece quando um mundo é escolhido */
+.painel{max-width:1180px;margin:18px auto 0;padding:0 28px;position:relative;z-index:9}
+.cartao{position:relative;overflow:hidden;background:var(--surface);border-radius:26px;padding:16px 22px 16px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;box-shadow:0 0 0 3px var(--cor,var(--azul)),0 8px 0 3px color-mix(in srgb,var(--cor,var(--azul)) 35%,transparent),0 16px 30px rgba(27,42,94,.16)}
+.cartao .ico{flex:none;width:78px;height:78px;border-radius:20px;display:grid;place-items:center;background:color-mix(in srgb,var(--cor,var(--azul)) 14%,var(--surface))}
+.cartao .ico:empty{display:none}
+.cartao .ico svg{width:66px;height:auto;overflow:visible}
+.cartao h2{margin:0;font-family:var(--display);font-size:clamp(24px,3vw,32px);line-height:1.1}
+.cartao p{margin:2px 0 0;color:var(--muted)}
+.cartao .txt{flex:1 1 280px;min-width:0}
+.ir{display:inline-flex;align-items:center;gap:10px;min-height:56px;padding:10px 26px;border-radius:20px;border:0;background:var(--cor,var(--azul));color:#fff;font:800 20px var(--texto);text-decoration:none;cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.22)}
+.ir:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.22)}
+.ir[aria-disabled="true"]{background:var(--line);color:var(--muted);box-shadow:none;cursor:default}
+
+/* parte dos adultos */
+main{max-width:1180px;margin:0 auto;padding:40px 16px 24px}
+h2.sec{font-family:var(--display);font-size:clamp(26px,3.4vw,36px);line-height:1.1;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 22px;max-width:640px}
+.ideias{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:0;padding:0;list-style:none}
+.ideias li{background:var(--surface);border-radius:24px;padding:18px;border-bottom:6px solid var(--cor)}
+.ideias svg{width:56px;height:56px}
+.ideias b{display:block;font-family:var(--display);font-size:21px;line-height:1.2;margin:6px 0 2px}
+.ideias p{margin:0;color:var(--muted)}
+.app{margin-top:28px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;background:linear-gradient(135deg,#2490D6,#8752C8);color:#fff;border-radius:28px;padding:22px}
+.app h3{margin:0;font-family:var(--display);font-size:26px;line-height:1.1}
+.app p{margin:4px 0 0;opacity:.95}
+.app .txt{flex:1 1 280px}
+.app .selo{background:#fff;color:#1B2A5E;border-radius:16px;padding:10px 16px;font-weight:900}
+.app .ir{background:#fff;color:#1B2A5E}
+.ideias.seis{grid-template-columns:repeat(3,1fr)}
+@media (max-width:900px){.ideias.seis{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.ideias.seis{grid-template-columns:1fr}}
+.sub-tit{font-family:var(--display);font-size:22px;margin:26px 0 12px}
+.passos.adesao{grid-template-columns:repeat(4,1fr)}
+@media (max-width:900px){.passos.adesao{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.passos.adesao{grid-template-columns:1fr}}
+#redes .app{margin-top:22px}
+.rodape{max-width:1180px;margin:34px auto 28px;background:var(--surface);border-radius:30px;overflow:hidden;color:var(--muted);font-size:15px;box-shadow:0 4px 0 color-mix(in srgb,var(--turquesa) 18%,transparent),inset 0 0 0 2px color-mix(in srgb,var(--turquesa) 14%,transparent)}
+.rodape::before{content:"";display:block;height:6px;background:linear-gradient(90deg,var(--rosa) 0 16.6%,var(--laranja) 0 33.3%,var(--verde) 0 50%,var(--azul) 0 66.6%,var(--roxo) 0 83.3%,var(--turquesa) 0)}
+.rd-main{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 28px;padding:20px 26px 6px}
+.rd-txt{text-align:right}.rd-txt p{margin:0;line-height:1.55}
+.rd-s{font-weight:800;color:var(--azul);margin-bottom:4px!important}
+.rodape b{color:var(--ink)}.rodape .rd-txt a{color:var(--ink);text-underline-offset:3px}
+.rd-links{display:flex;flex-wrap:wrap;gap:10px;padding:14px 26px 20px}
+.rd-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;padding:12px 26px;background:color-mix(in srgb,var(--turquesa) 12%,var(--surface));font-size:13.5px;font-weight:700}
+@media(max-width:760px){.rodape{margin:24px 12px}.rd-main{flex-direction:column;text-align:center;padding:20px 16px 4px}.rd-txt{text-align:center}.rd-links{justify-content:center;padding:12px 12px 18px}.rd-bar{justify-content:center;text-align:center}}
+
+
+/* menu, carrinho e seções novas */
+.barra{flex-wrap:wrap}
+.menu{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.tchip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 14px 4px 8px;border-radius:999px;font:800 15px/1.1 var(--texto);color:var(--ink);text-decoration:none;white-space:nowrap;background:color-mix(in srgb,var(--tc) 14%,var(--surface));box-shadow:inset 0 0 0 2.5px var(--tc),0 3px 0 color-mix(in srgb,var(--tc) 60%,#000)}
+.tchip:hover{background:color-mix(in srgb,var(--tc) 24%,var(--surface))}
+.tchip:active{transform:translateY(2px);box-shadow:inset 0 0 0 2.5px var(--tc),0 1px 0 color-mix(in srgb,var(--tc) 60%,#000)}
+.tchip .tci{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--surface);font-size:17px}
+.acoes{display:flex;gap:8px;align-items:center}
+.carrinho-bt{position:relative;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;border:0;background:color-mix(in srgb,var(--laranja) 16%,var(--surface));box-shadow:inset 0 0 0 2.5px var(--laranja),0 3px 0 color-mix(in srgb,var(--laranja) 60%,#000);cursor:pointer;color:var(--ink)}
+.qtd{position:absolute;top:-6px;right:-6px;min-width:24px;height:24px;border-radius:12px;background:var(--rosa);color:#fff;font:900 13px/24px var(--texto);text-align:center;padding:0 6px}
+.qtd[data-zero]{display:none}
+.sec-bloco{margin:0 0 56px;scroll-margin-top:16px}
+.olho{margin:0 0 4px;color:var(--rosa);font-weight:900;text-transform:uppercase;letter-spacing:.08em;font-size:14px}
+.abas{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 16px}
+.abas button{border:3px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 18px;font-weight:800;cursor:pointer;min-height:48px}
+.abas button[aria-selected="true"]{background:var(--azul);border-color:var(--azul);color:#fff}
+.passos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;counter-reset:p}
+.passos.tres{grid-template-columns:repeat(3,1fr)}
+@media (max-width:900px){.passos.tres{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.passos.tres{grid-template-columns:1fr}}
+.passos li{background:var(--surface);border-radius:22px;padding:18px 18px 18px 64px;position:relative;counter-increment:p}
+.passos li::before{content:counter(p);position:absolute;left:16px;top:16px;width:36px;height:36px;border-radius:50%;background:var(--laranja);color:#fff;font:800 20px/36px var(--display);text-align:center}
+.passos b{display:block;font-family:var(--display);font-size:20px;line-height:1.2}
+.passos p{margin:4px 0 0;color:var(--muted)}
+.direitos{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.direitos li{background:var(--surface);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:800}
+.objs{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.obj{background:var(--surface);border-radius:22px;border-top:8px solid var(--cor);padding:16px 18px}
+.obj h3{margin:0;font-family:var(--display);font-size:22px;line-height:1.15}
+.obj .tema{margin:0 0 8px;color:var(--muted);font-weight:800;font-size:15px}
+.campos{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px;padding:0;list-style:none}
+.campos li{font-size:13px;font-weight:800;background:color-mix(in srgb,var(--cor) 16%,transparent);border-radius:8px;padding:3px 8px}
+.obj ul.metas{margin:0;padding-left:18px}
+.obj ul.metas li{margin:0 0 6px}
+.cod{font:800 12px var(--texto);color:var(--muted);white-space:nowrap}
+/* loja: vitrine das Letras */
+.vitrine{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);border-radius:32px;overflow:hidden;background:var(--surface);box-shadow:inset 0 0 0 3px var(--rosa),0 7px 0 color-mix(in srgb,var(--rosa) 45%,transparent)}
+.vt-palco{position:relative;min-height:340px;overflow:hidden;background:linear-gradient(#5DB8F2,#A8DCFA 46%,#E2F6FF 62%,#9ED86A 62.4%,#7FC25A)}
+.vt-arco{position:absolute;left:50%;bottom:34%;width:118%;aspect-ratio:2/1;translate:-50% 0;border-radius:999px 999px 0 0;background:radial-gradient(circle farthest-side at 50% 100%,transparent 66%,#8752C8 66% 70.5%,#2490D6 70.5% 75%,#3FA535 75% 79.5%,#F7D23F 79.5% 84%,#F7A823 84% 88.5%,#EE4F7B 88.5% 93%,transparent 93%);opacity:.9}
+.vt-sol{position:absolute;right:8%;top:8%;width:54px;aspect-ratio:1;border-radius:50%;background:radial-gradient(#FFE97A 55%,#FFD25A 56%);box-shadow:0 0 0 10px rgba(255,210,90,.3)}
+.vt-nuv{position:absolute;left:8%;top:12%;width:90px;height:28px;border-radius:30px;background:#fff;opacity:.95}
+.vt-nuv::before{content:"";position:absolute;width:42px;height:42px;left:14px;top:-20px;border-radius:50%;background:#fff}
+.vt-art{position:absolute;left:50%;bottom:16%;translate:-50% 0;width:min(62%,260px)}
+.vt-art svg{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 0 rgba(30,70,40,.18))}
+.vt-letras{position:absolute;left:0;right:0;bottom:5%;display:flex;justify-content:center;gap:6px}
+.vt-letras i{font:800 clamp(18px,2.2vw,26px)/1 var(--display);font-style:normal;color:#fff;width:1.6em;aspect-ratio:1;display:grid;place-items:center;border-radius:22%;background:var(--lc);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18),0 4px 0 color-mix(in srgb,var(--lc) 60%,#000);animation:vtPula 2.4s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes vtPula{0%,70%,100%{translate:0 0}80%{translate:0 -8px}}
+.vt-info{display:flex;flex-direction:column;gap:12px;padding:26px 28px 26px}
+.vt-tag{align-self:flex-start;font-size:13px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--rosa);background:color-mix(in srgb,var(--rosa) 12%,var(--surface));border-radius:999px;padding:4px 12px}
+.vt-info h3{margin:0;font:800 clamp(26px,3vw,34px)/1.08 var(--display)}
+.vt-lista{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.vt-lista li{position:relative;padding-left:30px;color:var(--muted);font-size:15.5px;line-height:1.4}
+.vt-lista li::before{content:"✓";position:absolute;left:0;top:0;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;background:var(--verde);color:#fff;font-size:13px;font-weight:900}
+.vt-lista b{color:var(--ink)}
+.vt-compra{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 18px;margin-top:4px;padding:16px 18px;border-radius:22px;background:color-mix(in srgb,var(--laranja) 10%,var(--surface));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--laranja) 35%,var(--surface))}
+.vt-preco{display:grid;grid-template-columns:auto auto;align-items:baseline;column-gap:8px}
+.vt-off{grid-column:1/-1;justify-self:start;margin-bottom:4px;background:var(--verde);color:#fff;font-weight:900;font-size:13px;border-radius:999px;padding:3px 12px;box-shadow:0 3px 0 #2B7A24}
+.vt-preco s{color:var(--muted);font-weight:700}
+.vt-preco strong{font:800 36px/1 var(--display);color:var(--ink)}
+.vt-preco small{grid-column:1/-1;color:var(--muted);font-weight:700}
+.vt-bts{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.vt-bts button,.vt-teste{border:0;border-radius:999px;min-height:52px;padding:10px 24px;font:900 17px/1.1 var(--texto);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center}
+.vt-add{background:var(--rosa);color:#fff;box-shadow:0 5px 0 color-mix(in srgb,var(--rosa) 60%,#000)}
+.vt-ir{background:var(--verde);color:#fff;box-shadow:0 5px 0 #2B7A24}
+.vt-teste{background:var(--surface);color:var(--ink);box-shadow:inset 0 0 0 2.5px var(--azul),0 4px 0 color-mix(in srgb,var(--azul) 50%,#000)}
+.vt-tirar{background:none!important;color:var(--muted);min-height:40px!important;padding:6px 10px!important;font-size:14px!important;text-decoration:underline}
+.vt-bts button:active,.vt-teste:active{transform:translateY(3px)}
+@media (max-width:820px){.vitrine{grid-template-columns:1fr}.vt-palco{min-height:250px}.vt-art{width:min(44%,200px);bottom:22%}.vt-info{padding:20px 18px}}
+/* próximos mundos */
+.carrinho-flut{position:fixed;right:16px;bottom:16px;z-index:40;display:none;align-items:center;gap:8px;min-height:52px;padding:8px 18px 8px 14px;border:0;border-radius:999px;background:var(--laranja);color:#fff;font:900 16px/1 var(--texto);cursor:pointer;box-shadow:0 5px 0 color-mix(in srgb,var(--laranja) 60%,#000),0 8px 22px rgba(0,0,0,.18)}
+.carrinho-flut.tem.longe{display:inline-flex}
+.carrinho-flut .fq{display:grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border-radius:999px;background:#fff;color:var(--ink);font-size:14px}
+.carrinho-flut:active{transform:translateY(3px)}
+.prox-t{display:flex;align-items:center;gap:12px;margin:34px 0 12px}
+.prox-t h3{margin:0;font:800 22px var(--display)}
+.prox-t span{font-size:13px;font-weight:900;color:var(--muted);background:var(--surface);border-radius:999px;padding:3px 12px;box-shadow:inset 0 0 0 2px var(--line)}
+.produtos{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:860px){.produtos{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.produtos{grid-template-columns:1fr 1fr;gap:10px}.prod{flex-direction:column;align-items:stretch;text-align:left;padding:8px 8px 10px}.prod .palco-p{flex:none;height:70px}.prod h4{font-size:14.5px}}
+.prod{display:flex;align-items:center;gap:12px;padding:10px 14px 10px 10px;border-radius:20px;background:var(--surface);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--cor) 30%,var(--surface))}
+.prod .palco-p{flex:0 0 74px;height:74px;display:grid;place-items:center;border-radius:16px;background:radial-gradient(120% 90% at 50% 0,#fff 0,color-mix(in srgb,var(--cor) 18%,#fff) 100%)}
+.prod .palco-p svg{width:100%;height:auto;max-height:66px;filter:saturate(.8)}
+.prod .pi{display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.prod .tema{font-size:11.5px;font-weight:900;letter-spacing:.3px;text-transform:uppercase;color:color-mix(in srgb,var(--cor) 75%,#1B2A5E)}
+.prod h4{margin:0;font:800 16px/1.15 var(--display)}
+.prod .breve{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;color:var(--muted)}
+.prod .breve svg{width:14px;height:14px}
+.combo{display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;margin:14px 0 0;padding:14px 18px;border-radius:22px;background:color-mix(in srgb,var(--roxo) 7%,var(--surface));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--roxo) 25%,var(--surface))}
+.combo .cb-ic{font-size:30px}
+.combo .txt{flex:1 1 260px;display:flex;flex-direction:column;color:var(--muted);font-size:15px}
+.combo .txt b{color:var(--ink);font:800 18px var(--display)}
+.combo .breve{font-weight:900;font-size:13px;color:var(--roxo);background:var(--surface);border-radius:999px;padding:4px 12px;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--roxo) 35%,var(--surface))}
+.gaveta{position:fixed;inset:0;z-index:50}
+.gaveta-fundo{position:absolute;inset:0;background:rgba(16,24,48,.55)}
+.gaveta-cx{position:absolute;right:0;top:0;bottom:0;width:min(420px,100%);background:var(--surface);color:var(--ink);padding:18px;display:flex;flex-direction:column;gap:12px;overflow:auto;box-shadow:-10px 0 30px rgba(0,0,0,.2)}
+.gaveta-topo{display:flex;justify-content:space-between;align-items:center}
+.gaveta-topo h2{margin:0;font-family:var(--display);font-size:28px}
+.x{border:0;background:var(--bg);width:44px;height:44px;border-radius:50%;font-size:20px;cursor:pointer}
+.itens{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.itens li{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:16px;padding:8px 10px}
+.itens .bola{width:14px;height:14px;border-radius:50%;background:var(--cor);flex:none}
+.itens .nm{flex:1;font-weight:800;line-height:1.25}
+.itens .nm small{display:block;color:var(--muted);font-weight:700}
+.itens button{border:0;background:none;color:var(--muted);font-weight:800;cursor:pointer;text-decoration:underline;min-height:40px}
+.vazio{color:var(--muted);text-align:center;padding:20px 0}
+.dica{background:#FFF4CC;color:#1B2A5E;border:2px solid #FFC531;border-radius:16px;padding:10px 12px;font-weight:700}
+.dica button{margin-top:8px;border:0;border-radius:12px;background:#1B2A5E;color:#fff;padding:8px 12px;font-weight:800;cursor:pointer}
+.contas{margin:0;display:flex;flex-direction:column;gap:4px}
+.contas div{display:flex;justify-content:space-between}
+.contas div[hidden]{display:none}
+.contas dt{color:var(--muted)}.contas dd{margin:0;font-weight:800}
+.contas .tot{font:800 24px var(--display);border-top:2px solid var(--line);padding-top:6px}
+.contas .tot dt{color:var(--ink)}
+.ir.fim{justify-content:center}
+.nota-pg{margin:0;color:var(--muted);font-size:14px}
+.retorno{position:sticky;top:0;z-index:40;display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 16px;background:#3FA535;color:#fff;font-weight:800}
+.retorno.pendente{background:#F7A823;color:#1B2A5E}.retorno.falha{background:#C62828}
+.retorno span{flex:1 1 260px;font-weight:700}
+.retorno button{border:0;background:rgba(255,255,255,.25);color:inherit;border-radius:50%;width:36px;height:36px;cursor:pointer}
+button.ir.fim{border:0;cursor:pointer;font:inherit;font-weight:900}
+.ir.fim[aria-disabled=true]{opacity:.5;cursor:not-allowed}
+.pix{background:var(--bg);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:stretch}
+.pix[hidden]{display:none}
+.pix h3{margin:0;font-family:var(--display);font-size:22px;display:flex;align-items:center;gap:8px}
+.pix h3 svg{width:28px;height:28px}
+.pix ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-weight:700}
+.pix .qr{background:#fff;border-radius:16px;padding:10px;align-self:center;width:min(240px,100%)}
+.pix .qr svg{display:block;width:100%;height:auto}
+.pix .valor{text-align:center;font:800 26px var(--display);margin:0}
+.pix textarea{width:100%;min-height:76px;resize:none;border:2px solid var(--line);border-radius:12px;padding:8px;font:600 12px/1.35 ui-monospace,monospace;background:var(--surface);color:var(--ink);word-break:break-all}
+.pix .copiar{border:0;border-radius:14px;background:#32BCAD;color:#fff;font-weight:900;padding:12px;min-height:48px;cursor:pointer;font-size:16px}
+.pix .chave{margin:0;font-size:14px;color:var(--muted);text-align:center;overflow-wrap:anywhere}
+.pix .ir{justify-content:center;text-align:center}
+.cad{background:var(--bg);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.cad[hidden]{display:none}
+.cad h3{margin:0;font-family:var(--display);font-size:22px}
+.cad p{margin:0;color:var(--muted);font-size:14px}
+.cad label{display:flex;flex-direction:column;gap:4px;font-weight:800;font-size:15px}
+.cad input,.cad select{font:600 16px var(--texto);padding:10px 12px;border:2px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);min-height:46px}
+.cad input:focus-visible,.cad select:focus-visible{outline:3px solid var(--azul);outline-offset:1px}
+.cad .duas{display:grid;grid-template-columns:1fr 90px;gap:8px}
+.cad .aceite{flex-direction:row;align-items:flex-start;gap:8px;font-weight:700;font-size:14px}
+.cad .aceite input{min-height:0;width:20px;height:20px;margin-top:2px;flex:none}
+.cad .erro{color:#C62828;font-weight:800;font-size:14px;margin:0}
+.cad .ir{justify-content:center}
+.pedido-cod{text-align:center;margin:0;font-weight:800}
+.pedido-cod span{font-family:ui-monospace,monospace;background:var(--surface);border-radius:8px;padding:2px 8px}
+@media (max-width:680px){
+  .menu{order:3;width:calc(100% + 32px);margin:0 -16px;padding:2px 16px 6px;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start;scrollbar-width:none}
+  .tchip{font-size:13.5px;padding-right:11px}
+  .marca{font-size:20px}.marca img{width:50px;height:50px}
+  body:not(.escolheu) .painel{display:none}
+}
+
+@media (max-width:680px){
+  .mapa{border-radius:24px}
+  .painel{padding:0 10px;margin-top:12px;position:sticky;bottom:10px}
+  .cartao{padding:16px}
+  .ir{width:100%;justify-content:center}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body id="topo">
+<header class="topo-site">
+ <div class="barra">
+  <a class="marca" href="#topo" aria-label="Coleção Mundo Encantado, início">
+    <img src="logo-mundo-encantado.webp" width="64" height="64" alt="">
+    <span class="bname"><span>Mundo <span class="wm"><i style="color:var(--rosa)">E</i><i style="color:var(--laranja)">n</i><i style="color:var(--verde)">c</i><i style="color:var(--azul)">a</i><i style="color:var(--roxo)">n</i><i style="color:var(--turquesa)">t</i><i style="color:var(--rosa)">a</i><i style="color:var(--laranja)">d</i><i style="color:var(--verde)">o</i></span></span><small>Coleção para 4 e 5 anos</small></span>
+  </a>
+  <nav class="menu" aria-label="Seções">
+    <a class="tchip" style="--tc:var(--azul)" href="#mapa"><span class="tci" aria-hidden="true">🗺️</span>Mundos</a>
+    <a class="tchip" style="--tc:var(--rosa)" href="#orientacoes"><span class="tci" aria-hidden="true">📖</span>Como usar</a>
+    <a class="tchip" style="--tc:var(--verde)" href="#objetivos"><span class="tci" aria-hidden="true">🎯</span>Objetivos</a>
+    <a class="tchip" style="--tc:var(--roxo)" href="#redes"><span class="tci" aria-hidden="true">🏫</span>Prefeituras</a>
+    <a class="tchip" style="--tc:var(--laranja)" href="#loja"><span class="tci" aria-hidden="true">🛍️</span>Loja</a>
+  </nav>
+  <div class="acoes">
+    <button class="som" id="som" type="button" aria-pressed="true" aria-label="Ligar ou desligar o som"><span class="on" aria-hidden="true">🔊</span><span class="off" aria-hidden="true">🔈</span></button>
+    <button class="carrinho-bt" id="abrirCarrinho" type="button" aria-label="Abrir carrinho"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 3h4l3 13h12l3-9H8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="21" r="2" fill="currentColor"/><circle cx="20" cy="21" r="2" fill="currentColor"/></svg><span class="qtd" id="qtd">0</span></button>
+  </div>
+ </div>
+</header>
+<button class="carrinho-flut" id="carrinhoFlut" type="button" aria-label="Ir para o carrinho"><svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M2 3h4l3 13h12l3-9H8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="21" r="2" fill="currentColor"/><circle cx="20" cy="21" r="2" fill="currentColor"/></svg>Carrinho <span class="fq" id="flutQtd">0</span></button>
+
+<div class="palco">
+  <div class="mapa" id="mapa">
+    <svg class="fundo" id="fundo" aria-hidden="true"></svg>
+    <div class="titulo"><h1 id="tit"><img class="logo-mapa" src="logo-mundo-encantado.webp" width="288" height="288" alt="Coleção Mundo Encantado"></h1><p>6 mundos para brincar. Toque num deles!</p></div>
+    <div class="rabisco" id="rabisco"></div>
+    <div class="balao" id="balao" role="status" aria-live="polite"></div>
+  </div>
+</div>
+
+<div class="painel"><div class="cartao" id="cartao">
+  <span class="ico" id="cIco" aria-hidden="true"></span>
+  <div class="txt"><h2 id="cTit">Olá! Eu sou a fadinha Lumi.</h2><p id="cTxt">Escolha um mundo no mapa e eu levo você até lá.</p></div>
+  <a class="ir" id="cIr" aria-disabled="true">Escolha um mundo</a>
+</div></div>
+
+<main>
+  <section class="sec-bloco" aria-labelledby="tComo">
+    <p class="olho">A coleção</p>
+    <h2 class="sec" id="tComo">Aprender brincando, do jeito da infância</h2>
+    <p class="sub">A Coleção Mundo Encantado reúne brincadeiras digitais para crianças de 4 e 5 anos. Cada mundo tem trilhas com mascotes, tudo lido em voz alta, e fichas para usar na sala ou em casa.</p>
+    <ul class="ideias">
+      <li style="--cor:var(--rosa)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="14" width="30" height="30" rx="8" fill="#EE4F7B"/><path d="M40 20q8 8 0 16M45 15q13 13 0 26" stroke="#EE4F7B" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M14 29h14M21 22v14" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg><b>Tudo em voz alta</b><p>A criança brinca sozinha antes de saber ler.</p></li>
+      <li style="--cor:var(--verde)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="8" y="6" width="34" height="44" rx="6" fill="#3FA535"/><path d="M16 18h18M16 26h18M16 34h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="44" cy="42" r="9" fill="#F7A823"/><path d="M40 42l3 3 5-6" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></svg><b>Alinhado à BNCC</b><p>Cada brincadeira indica os objetivos de aprendizagem da Educação Infantil.</p></li>
+      <li style="--cor:var(--laranja)"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M28 6l6 12 13 2-9.5 9 2.3 13L28 36l-11.8 6 2.3-13L9 20l13-2z" fill="#F7A823"/><circle cx="12" cy="46" r="5" fill="#EE4F7B"/><circle cx="44" cy="46" r="5" fill="#2490D6"/></svg><b>Estrelas e figurinhas</b><p>A criança vê o que já fez e quer continuar.</p></li>
+      <li style="--cor:var(--turquesa)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="14" y="4" width="28" height="48" rx="7" fill="#16A3B0"/><rect x="18" y="10" width="20" height="32" rx="3" fill="#fff"/><path d="M24 22l4 4 6-8" stroke="#3FA535" stroke-width="3.5" fill="none" stroke-linecap="round"/></svg><b>Seguro para a criança</b><p>Sem anúncios e sem cadastro. Os dados ficam só no aparelho.</p></li>
+    </ul>
+  </section>
+
+  <section class="sec-bloco" id="orientacoes" aria-labelledby="tOri">
+    <p class="olho">Orientações</p>
+    <h2 class="sec" id="tOri">Como usar com a criança</h2>
+    <div class="abas" role="tablist" aria-label="Para quem">
+      <button role="tab" id="abaFam" aria-controls="pFam" aria-selected="true" type="button">👨‍👩‍👧 Para famílias</button>
+      <button role="tab" id="abaProf" aria-controls="pProf" aria-selected="false" type="button" tabindex="-1">🍎 Para professores</button>
+    </div>
+    <div class="aba-painel" role="tabpanel" id="pFam" aria-labelledby="abaFam">
+      <ol class="passos tres" style="margin-top:28px">
+        <li><b>Brinque junto</b><p>Nos primeiros dias, sente ao lado da criança. Mostre como tocar, ouvir e repetir. Aos poucos ela ganha autonomia.</p></li>
+        <li><b>Pouco tempo, todo dia</b><p>De 15 a 20 minutos por vez é o bastante. A Sociedade Brasileira de Pediatria recomenda, de 2 a 5 anos, até 1 hora de tela por dia, sempre com um adulto por perto.</p></li>
+        <li><b>Errar faz parte</b><p>Não corrija na hora. O mascote ajuda e a brincadeira dá outra chance. Comemore o esforço, não só o acerto.</p></li>
+        <li><b>Leve para a vida</b><p>Depois de brincar, procurem juntos letras nos rótulos, números na rua, cores na natureza. É assim que o aprendizado fica.</p></li>
+        <li><b>Converse</b><p>Pergunte: "do que você mais gostou?", "o que o mascote pediu?". Falar sobre o que fez organiza o pensamento.</p></li>
+      </ol>
+    </div>
+    <div class="aba-painel" role="tabpanel" id="pProf" aria-labelledby="abaProf" hidden>
+      <ol class="passos tres" style="margin-top:28px">
+        <li><b>Planeje por trilha</b><p>Escolha uma trilha por semana. Cada brincadeira tem ficha com materiais, passo a passo e perguntas para a roda.</p></li>
+        <li><b>Roda e pequenos grupos</b><p>Projete na TV ou lousa digital para a turma toda, ou use um tablet com 3 ou 4 crianças: uma toca, as outras ajudam e conferem.</p></li>
+        <li><b>Do digital para o concreto</b><p>Antes ou depois da tela, faça a versão com o corpo: crachás, cartazes, contagem com objetos, dança, pintura.</p></li>
+        <li><b>Observe e registre</b><p>Anote avanços no portfólio de cada criança. As estrelas e figurinhas ajudam a ver o percurso.</p></li>
+        <li><b>Todas as crianças</b><p>Tudo é lido em voz alta, sem tempo limite, com letras grandes e opção de alto contraste. Envie a ficha para casa e aproxime a família.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="sec-bloco" id="objetivos" aria-labelledby="tObj">
+    <p class="olho">Objetivos pedagógicos</p>
+    <h2 class="sec" id="tObj">O que a criança desenvolve em cada mundo</h2>
+    <p class="sub">Os mundos seguem os direitos de aprendizagem e os campos de experiência da Base Nacional Comum Curricular para crianças pequenas (4 anos a 5 anos e 11 meses).</p>
+    <ul class="direitos" aria-label="Direitos de aprendizagem">
+      <li>Conviver</li><li>Brincar</li><li>Participar</li><li>Explorar</li><li>Expressar</li><li>Conhecer-se</li>
+    </ul>
+    <div class="objs" id="objs"></div>
+  </section>
+
+  <section class="sec-bloco" id="redes" aria-labelledby="tRedes">
+    <p class="olho">Para prefeituras e secretarias de educação</p>
+    <h2 class="sec" id="tRedes">A coleção na sala de aula de toda a rede</h2>
+    <p class="sub">A secretaria leva a coleção para todas as turmas de Educação Infantil do município, com formação para os professores e acompanhamento das escolas. A versão para redes está em preparação.</p>
+    <h3 class="sub-tit">O que a rede recebe</h3>
+    <ul class="ideias seis">
+      <li style="--cor:var(--roxo)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="10" width="44" height="32" rx="5" fill="#8752C8"/><rect x="11" y="15" width="34" height="22" rx="2" fill="#E6DAF7"/><path d="M22 26l5 4 8-9" stroke="#8752C8" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="20" y="44" width="16" height="4" rx="2" fill="#8752C8"/></svg><b>Uso nas escolas</b><p>Abre no navegador do tablet, do computador ou da TV da sala, sem instalar nada. Para a turma toda ou pequenos grupos.</p></li>
+      <li style="--cor:var(--verde)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="6" y="8" width="44" height="30" rx="5" fill="#3FA535"/><path d="M14 18h20M14 26h14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="40" cy="42" r="7" fill="#F7A823"/><path d="M30 54q10-12 20 0" fill="#F7A823"/></svg><b>Área do professor</b><p>Turmas com código de entrada, atividades para projetar na sala e o progresso de cada criança.</p></li>
+      <li style="--cor:var(--rosa)"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M8 14l20-8 20 8-20 8z" fill="#EE4F7B"/><path d="M16 18v12q12 8 24 0V18" fill="#F59AB5"/><path d="M48 14v14" stroke="#EE4F7B" stroke-width="3"/></svg><b>Formação dos professores</b><p>Curso curto, sequências didáticas e fichas para imprimir.</p></li>
+      <li style="--cor:var(--laranja)"><svg viewBox="0 0 56 56" aria-hidden="true"><rect x="8" y="30" width="9" height="18" rx="2" fill="#F7A823"/><rect x="23" y="20" width="9" height="28" rx="2" fill="#EE4F7B"/><rect x="38" y="10" width="9" height="38" rx="2" fill="#2490D6"/></svg><b>Alinhado à BNCC</b><p>Cada brincadeira indica o objetivo que trabalha. Relatórios por campo de experiência, sem nota e sem ranking.</p></li>
+      <li style="--cor:var(--azul)"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M6 24L28 10l22 14z" fill="#2490D6"/><rect x="10" y="24" width="36" height="22" fill="#9CCBEF"/><path d="M16 30v12M24 30v12M32 30v12M40 30v12" stroke="#2490D6" stroke-width="4"/><rect x="6" y="46" width="44" height="5" rx="2" fill="#2490D6"/></svg><b>Painel da secretaria</b><p>Escolas, turmas e uso da rede num lugar só, para planejar e prestar contas. Em preparação.</p></li>
+      <li style="--cor:var(--turquesa)"><svg viewBox="0 0 56 56" aria-hidden="true"><path d="M28 4l20 8v14c0 13-9 22-20 26C17 48 8 39 8 26V12z" fill="#16A3B0"/><path d="M19 28l6 6 12-13" stroke="#fff" stroke-width="4.5" fill="none" stroke-linecap="round"/></svg><b>Dados protegidos</b><p>Sem anúncios. Só o primeiro nome da criança, contrato conforme a LGPD e dados apagados ao fim do contrato.</p></li>
+    </ul>
+    <h3 class="sub-tit">Como funciona a adesão</h3>
+    <ol class="passos adesao">
+      <li><b>Proposta</b><p>A secretaria conta quantas escolas e crianças tem e recebe uma proposta.</p></li>
+      <li><b>Apresentação</b><p>Mostramos a coleção para a equipe pedagógica.</p></li>
+      <li><b>Piloto</b><p>Algumas turmas usam primeiro, com acompanhamento.</p></li>
+      <li><b>Toda a rede</b><p>Licença por escola, que vale para todas as turmas e professores.</p></li>
+    </ol>
+    <div class="app">
+      <div class="txt"><h3>Quer levar para o seu município?</h3><p>Conte quantas escolas e crianças a rede tem e enviamos uma proposta.</p></div>
+      <a class="ir" href="mailto:mundo.encantado.prof@gmail.com?subject=Proposta%20para%20rede%20de%20ensino&body=Ol%C3%A1%21%20Tenho%20interesse%20na%20Cole%C3%A7%C3%A3o%20Mundo%20Encantado%20para%20a%20rede.%0A%0AMunic%C3%ADpio%20ou%20escola%3A%0AN%C3%BAmero%20de%20escolas%3A%0AN%C3%BAmero%20de%20crian%C3%A7as%20de%204%20e%205%20anos%3A%0ANome%20e%20cargo%3A%0ATelefone%3A">Pedir proposta</a>
+    </div>
+  </section>
+
+  <section class="sec-bloco" id="loja" aria-labelledby="tLoja">
+    <p class="olho">Loja</p>
+    <h2 class="sec" id="tLoja">Comece pelo Brincando com as Letras</h2>
+    <p class="sub">Experimente de graça e, quando quiser, libere tudo com uma compra única. Os outros mundos chegam em breve.</p>
+    <div class="vitrine" id="vitrine"></div>
+    <div class="prox-t"><h3>Próximos mundos</h3><span>Em produção</span></div>
+    <ul class="produtos" id="produtos"></ul>
+    <div class="combo" id="combo"></div>
+  </section>
+</main>
+
+<div class="gaveta" id="gaveta" hidden>
+  <div class="gaveta-fundo" data-fechar></div>
+  <aside class="gaveta-cx" role="dialog" aria-modal="true" aria-labelledby="tCar">
+    <div class="gaveta-topo"><h2 id="tCar">Seu carrinho</h2><button type="button" class="x" data-fechar aria-label="Fechar">✕</button></div>
+    <ul class="itens" id="itens"></ul>
+    <div class="dica" id="dica" hidden></div>
+    <dl class="contas"><div><dt>Subtotal</dt><dd id="sub">R$ 0,00</dd></div><div id="linhaDesc" hidden><dt>Desconto</dt><dd id="desc"></dd></div><div class="tot"><dt>Total</dt><dd id="tot">R$ 0,00</dd></div></dl>
+    <button type="button" class="ir fim" id="finalizar" aria-disabled="true" aria-controls="cadastro" aria-expanded="false">Pagar com Pix</button>
+    <form class="cad" id="cadastro" hidden novalidate aria-labelledby="tCad">
+      <h3 id="tCad">Seus dados</h3>
+      <p>Usamos estes dados só para identificar o seu Pix e enviar o acesso aos mundos.</p>
+      <label>Nome do responsável<input name="nome" autocomplete="name" required></label>
+      <label>E-mail para receber o acesso<input name="email" type="email" autocomplete="email" required></label>
+      <label>WhatsApp ou telefone<input name="tel" type="tel" autocomplete="tel" inputmode="tel" required></label>
+      <div class="duas"><label>Cidade<input name="cidade" autocomplete="address-level2" required></label><label>UF<input name="uf" maxlength="2" autocomplete="address-level1" required></label></div>
+      <label>Quem está comprando<select name="perfil" required><option value="">Escolha</option><option>Família</option><option>Professor(a)</option><option>Escola</option></select></label>
+      <label class="aceite"><input type="checkbox" name="aceite" required>Concordo com o uso destes dados para o pedido e o acesso aos mundos. Não pedimos dados da criança.</label>
+      <p class="erro" id="cadErro" role="alert" hidden></p>
+      <button type="submit" class="ir">Continuar para o Pix</button>
+    </form>
+    <section class="pix" id="pix" hidden aria-labelledby="tPix">
+      <h3 id="tPix"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 2l7 7-7 7-7-7zM16 16l7 7-7 7-7-7zM2 16l7-7 7 7-7 7zM16 16l7-7 7 7-7 7z" fill="#32BCAD"/></svg>Pague com Pix</h3>
+      <p class="pedido-cod">Pedido <span id="pixPedidoCod"></span></p>
+      <p class="valor" id="pixValor"></p>
+      <div class="qr" id="pixQr" role="img" aria-label="QR Code do Pix com o valor do pedido"></div>
+      <ol>
+        <li>Abra o app do seu banco e escolha Pix.</li>
+        <li>Leia o QR Code ou use o código "copia e cola".</li>
+        <li>Depois de pagar, envie o pedido por e-mail com o comprovante.</li>
+      </ol>
+      <textarea id="pixCodigo" readonly aria-label="Código Pix copia e cola"></textarea>
+      <button type="button" class="copiar" id="pixCopiar">Copiar código Pix</button>
+      <p class="chave">Chave Pix (e-mail): mundo.encantado.prof@gmail.com</p>
+      <a class="ir" id="pixPedido">Enviar pedido e comprovante</a>
+    </section>
+    <p class="nota-pg">Recebido o Pix, enviamos o acesso aos mundos pelo e-mail do pedido. </p>
+  </aside>
+</div>
+
+<footer class="rodape">
+ <div class="rd-main">
+  <a class="marca" href="#topo" aria-label="Coleção Mundo Encantado, início">
+    <img src="logo-mundo-encantado.webp" width="64" height="64" alt="">
+    <span class="bname"><span>Mundo <span class="wm"><i style="color:var(--rosa)">E</i><i style="color:var(--laranja)">n</i><i style="color:var(--verde)">c</i><i style="color:var(--azul)">a</i><i style="color:var(--roxo)">n</i><i style="color:var(--turquesa)">t</i><i style="color:var(--rosa)">a</i><i style="color:var(--laranja)">d</i><i style="color:var(--verde)">o</i></span></span><small>Coleção para 4 e 5 anos</small></span>
+  </a>
+  <div class="rd-txt">
+    <p class="rd-s">Educação Infantil · 4 e 5 anos · alinhada à BNCC</p>
+    <p>Elaboração: <b>Profa. Dra. Sandra Medina Benini</b></p>
+    <p>Contato: <a href="mailto:mundo.encantado.prof@gmail.com">mundo.encantado.prof@gmail.com</a></p>
+  </div>
+ </div>
+ <nav class="rd-links" aria-label="Atalhos">
+    <a class="tchip" style="--tc:var(--azul)" href="#mapa"><span class="tci" aria-hidden="true">🗺️</span>Mundos</a>
+    <a class="tchip" style="--tc:var(--rosa)" href="#orientacoes"><span class="tci" aria-hidden="true">📖</span>Como usar</a>
+    <a class="tchip" style="--tc:var(--verde)" href="#objetivos"><span class="tci" aria-hidden="true">🎯</span>Objetivos</a>
+    <a class="tchip" style="--tc:var(--roxo)" href="#redes"><span class="tci" aria-hidden="true">🏫</span>Prefeituras</a>
+    <a class="tchip" style="--tc:var(--laranja)" href="#loja"><span class="tci" aria-hidden="true">🛍️</span>Loja</a>
+    <a class="tchip" style="--tc:var(--turquesa)" href="privacidade-alfabetizando.html"><span class="tci" aria-hidden="true">🔒</span>Privacidade</a>
+ </nav>
+ <div class="rd-bar"><span>6 mundos para aprender brincando</span><span>© 2026 Coleção Mundo Encantado</span></div>
+</footer>
+
+<script src="config.js"></script>
+<script type="module">
+// Firebase ligado (config.js): os pedidos do Pix também ficam guardados para a área da administradora.
+import { abrirBanco } from './plataforma.js';
+if (window.ME_CONFIG && window.ME_CONFIG.firebase) window.MEBanco = abrirBanco();
+</script>
+<script>/* qrcode-generator 1.4.4, (c) Kazuhiko Arase, licença MIT */
+var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],f={},c=function(t,r){o=function(t){for(var r=new Array(t),e=0;e<t;e+=1){r[e]=new Array(t);for(var n=0;n<t;n+=1)r[e][n]=null}return r}(i=4*e+17),l(0,0),l(i-7,0),l(0,i-7),s(),h(),d(t,r),e>=7&&v(t),null==a&&(a=p(e,n,u)),w(a,r)},l=function(t,r){for(var e=-1;e<=7;e+=1)if(!(t+e<=-1||i<=t+e))for(var n=-1;n<=7;n+=1)r+n<=-1||i<=r+n||(o[t+e][r+n]=0<=e&&e<=6&&(0==n||6==n)||0<=n&&n<=6&&(0==e||6==e)||2<=e&&e<=4&&2<=n&&n<=4)},h=function(){for(var t=8;t<i-8;t+=1)null==o[t][6]&&(o[t][6]=t%2==0);for(var r=8;r<i-8;r+=1)null==o[6][r]&&(o[6][r]=r%2==0)},s=function(){for(var t=B.getPatternPosition(e),r=0;r<t.length;r+=1)for(var n=0;n<t.length;n+=1){var i=t[r],a=t[n];if(null==o[i][a])for(var u=-2;u<=2;u+=1)for(var f=-2;f<=2;f+=1)o[i+u][a+f]=-2==u||2==u||-2==f||2==f||0==u&&0==f}},v=function(t){for(var r=B.getBCHTypeNumber(e),n=0;n<18;n+=1){var a=!t&&1==(r>>n&1);o[Math.floor(n/3)][n%3+i-8-3]=a}for(n=0;n<18;n+=1){a=!t&&1==(r>>n&1);o[n%3+i-8-3][Math.floor(n/3)]=a}},d=function(t,r){for(var e=n<<3|r,a=B.getBCHTypeInfo(e),u=0;u<15;u+=1){var f=!t&&1==(a>>u&1);u<6?o[u][8]=f:u<8?o[u+1][8]=f:o[i-15+u][8]=f}for(u=0;u<15;u+=1){f=!t&&1==(a>>u&1);u<8?o[8][i-u-1]=f:u<9?o[8][15-u-1+1]=f:o[8][15-u-1]=f}o[i-8][8]=!t},w=function(t,r){for(var e=-1,n=i-1,a=7,u=0,f=B.getMaskFunction(r),c=i-1;c>0;c-=2)for(6==c&&(c-=1);;){for(var g=0;g<2;g+=1)if(null==o[n][c-g]){var l=!1;u<t.length&&(l=1==(t[u]>>>a&1)),f(n,c-g)&&(l=!l),o[n][c-g]=l,-1==(a-=1)&&(u+=1,a=7)}if((n+=e)<0||i<=n){n-=e,e=-e;break}}},p=function(t,r,e){for(var n=A.getRSBlocks(t,r),o=b(),i=0;i<e.length;i+=1){var a=e[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var u=0;for(i=0;i<n.length;i+=1)u+=n[i].dataCount;if(o.getLengthInBits()>8*u)throw"code length overflow. ("+o.getLengthInBits()+">"+8*u+")";for(o.getLengthInBits()+4<=8*u&&o.put(0,4);o.getLengthInBits()%8!=0;)o.putBit(!1);for(;!(o.getLengthInBits()>=8*u||(o.put(236,8),o.getLengthInBits()>=8*u));)o.put(17,8);return function(t,r){for(var e=0,n=0,o=0,i=new Array(r.length),a=new Array(r.length),u=0;u<r.length;u+=1){var f=r[u].dataCount,c=r[u].totalCount-f;n=Math.max(n,f),o=Math.max(o,c),i[u]=new Array(f);for(var g=0;g<i[u].length;g+=1)i[u][g]=255&t.getBuffer()[g+e];e+=f;var l=B.getErrorCorrectPolynomial(c),h=k(i[u],l.getLength()-1).mod(l);for(a[u]=new Array(l.getLength()-1),g=0;g<a[u].length;g+=1){var s=g+h.getLength()-a[u].length;a[u][g]=s>=0?h.getAt(s):0}}var v=0;for(g=0;g<r.length;g+=1)v+=r[g].totalCount;var d=new Array(v),w=0;for(g=0;g<n;g+=1)for(u=0;u<r.length;u+=1)g<i[u].length&&(d[w]=i[u][g],w+=1);for(g=0;g<o;g+=1)for(u=0;u<r.length;u+=1)g<a[u].length&&(d[w]=a[u][g],w+=1);return d}(o,n)};f.addData=function(t,r){var e=null;switch(r=r||"Byte"){case"Numeric":e=M(t);break;case"Alphanumeric":e=x(t);break;case"Byte":e=m(t);break;case"Kanji":e=L(t);break;default:throw"mode:"+r}u.push(e),a=null},f.isDark=function(t,r){if(t<0||i<=t||r<0||i<=r)throw t+","+r;return o[t][r]},f.getModuleCount=function(){return i},f.make=function(){if(e<1){for(var t=1;t<40;t++){for(var r=A.getRSBlocks(t,n),o=b(),i=0;i<u.length;i++){var a=u[i];o.put(a.getMode(),4),o.put(a.getLength(),B.getLengthInBits(a.getMode(),t)),a.write(o)}var g=0;for(i=0;i<r.length;i++)g+=r[i].dataCount;if(o.getLengthInBits()<=8*g)break}e=t}c(!1,function(){for(var t=0,r=0,e=0;e<8;e+=1){c(!0,e);var n=B.getLostPoint(f);(0==e||t>n)&&(t=n,r=e)}return r}())},f.createTableTag=function(t,r){t=t||2;var e="";e+='<table style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: "+(r=void 0===r?4*t:r)+"px;",e+='">',e+="<tbody>";for(var n=0;n<f.getModuleCount();n+=1){e+="<tr>";for(var o=0;o<f.getModuleCount();o+=1)e+='<td style="',e+=" border-width: 0px; border-style: none;",e+=" border-collapse: collapse;",e+=" padding: 0px; margin: 0px;",e+=" width: "+t+"px;",e+=" height: "+t+"px;",e+=" background-color: ",e+=f.isDark(n,o)?"#000000":"#ffffff",e+=";",e+='"/>';e+="</tr>"}return e+="</tbody>",e+="</table>"},f.createSvgTag=function(t,r,e,n){var o={};"object"==typeof arguments[0]&&(t=(o=arguments[0]).cellSize,r=o.margin,e=o.alt,n=o.title),t=t||2,r=void 0===r?4*t:r,(e="string"==typeof e?{text:e}:e||{}).text=e.text||null,e.id=e.text?e.id||"qrcode-description":null,(n="string"==typeof n?{text:n}:n||{}).text=n.text||null,n.id=n.text?n.id||"qrcode-title":null;var i,a,u,c,g=f.getModuleCount()*t+2*r,l="";for(c="l"+t+",0 0,"+t+" -"+t+",0 0,-"+t+"z ",l+='<svg version="1.1" xmlns="http://www.w3.org/2000/svg"',l+=o.scalable?"":' width="'+g+'px" height="'+g+'px"',l+=' viewBox="0 0 '+g+" "+g+'" ',l+=' preserveAspectRatio="xMinYMin meet"',l+=n.text||e.text?' role="img" aria-labelledby="'+y([n.id,e.id].join(" ").trim())+'"':"",l+=">",l+=n.text?'<title id="'+y(n.id)+'">'+y(n.text)+"</title>":"",l+=e.text?'<description id="'+y(e.id)+'">'+y(e.text)+"</description>":"",l+='<rect width="100%" height="100%" fill="white" cx="0" cy="0"/>',l+='<path d="',a=0;a<f.getModuleCount();a+=1)for(u=a*t+r,i=0;i<f.getModuleCount();i+=1)f.isDark(a,i)&&(l+="M"+(i*t+r)+","+u+c);return l+='" stroke="transparent" fill="black"/>',l+="</svg>"},f.createDataURL=function(t,r){t=t||2,r=void 0===r?4*t:r;var e=f.getModuleCount()*t+2*r,n=r,o=e-r;return I(e,e,(function(r,e){if(n<=r&&r<o&&n<=e&&e<o){var i=Math.floor((r-n)/t),a=Math.floor((e-n)/t);return f.isDark(a,i)?0:1}return 1}))},f.createImgTag=function(t,r,e){t=t||2,r=void 0===r?4*t:r;var n=f.getModuleCount()*t+2*r,o="";return o+="<img",o+=' src="',o+=f.createDataURL(t,r),o+='"',o+=' width="',o+=n,o+='"',o+=' height="',o+=n,o+='"',e&&(o+=' alt="',o+=y(e),o+='"'),o+="/>"};var y=function(t){for(var r="",e=0;e<t.length;e+=1){var n=t.charAt(e);switch(n){case"<":r+="&lt;";break;case">":r+="&gt;";break;case"&":r+="&amp;";break;case'"':r+="&quot;";break;default:r+=n}}return r};return f.createASCII=function(t,r){if((t=t||1)<2)return function(t){t=void 0===t?2:t;var r,e,n,o,i,a=1*f.getModuleCount()+2*t,u=t,c=a-t,g={"██":"█","█ ":"▀"," █":"▄","  ":" "},l={"██":"▀","█ ":"▀"," █":" ","  ":" "},h="";for(r=0;r<a;r+=2){for(n=Math.floor((r-u)/1),o=Math.floor((r+1-u)/1),e=0;e<a;e+=1)i="█",u<=e&&e<c&&u<=r&&r<c&&f.isDark(n,Math.floor((e-u)/1))&&(i=" "),u<=e&&e<c&&u<=r+1&&r+1<c&&f.isDark(o,Math.floor((e-u)/1))?i+=" ":i+="█",h+=t<1&&r+1>=c?l[i]:g[i];h+="\n"}return a%2&&t>0?h.substring(0,h.length-a-1)+Array(a+1).join("▀"):h.substring(0,h.length-1)}(r);t-=1,r=void 0===r?2*t:r;var e,n,o,i,a=f.getModuleCount()*t+2*r,u=r,c=a-r,g=Array(t+1).join("██"),l=Array(t+1).join("  "),h="",s="";for(e=0;e<a;e+=1){for(o=Math.floor((e-u)/t),s="",n=0;n<a;n+=1)i=1,u<=n&&n<c&&u<=e&&e<c&&f.isDark(o,Math.floor((n-u)/t))&&(i=0),s+=i?g:l;for(o=0;o<t;o+=1)h+=s+"\n"}return h.substring(0,h.length-1)},f.renderTo2dContext=function(t,r){r=r||2;for(var e=f.getModuleCount(),n=0;n<e;n++)for(var o=0;o<e;o++)t.fillStyle=f.isDark(n,o)?"black":"white",t.fillRect(n*r,o*r,r,r)},f};t.stringToBytes=(t.stringToBytesFuncs={default:function(t){for(var r=[],e=0;e<t.length;e+=1){var n=t.charCodeAt(e);r.push(255&n)}return r}}).default,t.createStringToBytes=function(t,r){var e=function(){for(var e=S(t),n=function(){var t=e.read();if(-1==t)throw"eof";return t},o=0,i={};;){var a=e.read();if(-1==a)break;var u=n(),f=n()<<8|n();i[String.fromCharCode(a<<8|u)]=f,o+=1}if(o!=r)throw o+" != "+r;return i}(),n="?".charCodeAt(0);return function(t){for(var r=[],o=0;o<t.length;o+=1){var i=t.charCodeAt(o);if(i<128)r.push(i);else{var a=e[t.charAt(o)];"number"==typeof a?(255&a)==a?r.push(a):(r.push(a>>>8),r.push(255&a)):r.push(n)}}return r}};var r,e,n,o,i,a=1,u=2,f=4,c=8,g={L:1,M:0,Q:3,H:2},l=0,h=1,s=2,v=3,d=4,w=5,p=6,y=7,B=(r=[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],e=1335,n=7973,i=function(t){for(var r=0;0!=t;)r+=1,t>>>=1;return r},(o={}).getBCHTypeInfo=function(t){for(var r=t<<10;i(r)-i(e)>=0;)r^=e<<i(r)-i(e);return 21522^(t<<10|r)},o.getBCHTypeNumber=function(t){for(var r=t<<12;i(r)-i(n)>=0;)r^=n<<i(r)-i(n);return t<<12|r},o.getPatternPosition=function(t){return r[t-1]},o.getMaskFunction=function(t){switch(t){case l:return function(t,r){return(t+r)%2==0};case h:return function(t,r){return t%2==0};case s:return function(t,r){return r%3==0};case v:return function(t,r){return(t+r)%3==0};case d:return function(t,r){return(Math.floor(t/2)+Math.floor(r/3))%2==0};case w:return function(t,r){return t*r%2+t*r%3==0};case p:return function(t,r){return(t*r%2+t*r%3)%2==0};case y:return function(t,r){return(t*r%3+(t+r)%2)%2==0};default:throw"bad maskPattern:"+t}},o.getErrorCorrectPolynomial=function(t){for(var r=k([1],0),e=0;e<t;e+=1)r=r.multiply(k([1,C.gexp(e)],0));return r},o.getLengthInBits=function(t,r){if(1<=r&&r<10)switch(t){case a:return 10;case u:return 9;case f:case c:return 8;default:throw"mode:"+t}else if(r<27)switch(t){case a:return 12;case u:return 11;case f:return 16;case c:return 10;default:throw"mode:"+t}else{if(!(r<41))throw"type:"+r;switch(t){case a:return 14;case u:return 13;case f:return 16;case c:return 12;default:throw"mode:"+t}}},o.getLostPoint=function(t){for(var r=t.getModuleCount(),e=0,n=0;n<r;n+=1)for(var o=0;o<r;o+=1){for(var i=0,a=t.isDark(n,o),u=-1;u<=1;u+=1)if(!(n+u<0||r<=n+u))for(var f=-1;f<=1;f+=1)o+f<0||r<=o+f||0==u&&0==f||a==t.isDark(n+u,o+f)&&(i+=1);i>5&&(e+=3+i-5)}for(n=0;n<r-1;n+=1)for(o=0;o<r-1;o+=1){var c=0;t.isDark(n,o)&&(c+=1),t.isDark(n+1,o)&&(c+=1),t.isDark(n,o+1)&&(c+=1),t.isDark(n+1,o+1)&&(c+=1),0!=c&&4!=c||(e+=3)}for(n=0;n<r;n+=1)for(o=0;o<r-6;o+=1)t.isDark(n,o)&&!t.isDark(n,o+1)&&t.isDark(n,o+2)&&t.isDark(n,o+3)&&t.isDark(n,o+4)&&!t.isDark(n,o+5)&&t.isDark(n,o+6)&&(e+=40);for(o=0;o<r;o+=1)for(n=0;n<r-6;n+=1)t.isDark(n,o)&&!t.isDark(n+1,o)&&t.isDark(n+2,o)&&t.isDark(n+3,o)&&t.isDark(n+4,o)&&!t.isDark(n+5,o)&&t.isDark(n+6,o)&&(e+=40);var g=0;for(o=0;o<r;o+=1)for(n=0;n<r;n+=1)t.isDark(n,o)&&(g+=1);return e+=Math.abs(100*g/r/r-50)/5*10},o),C=function(){for(var t=new Array(256),r=new Array(256),e=0;e<8;e+=1)t[e]=1<<e;for(e=8;e<256;e+=1)t[e]=t[e-4]^t[e-5]^t[e-6]^t[e-8];for(e=0;e<255;e+=1)r[t[e]]=e;var n={glog:function(t){if(t<1)throw"glog("+t+")";return r[t]},gexp:function(r){for(;r<0;)r+=255;for(;r>=256;)r-=255;return t[r]}};return n}();function k(t,r){if(void 0===t.length)throw t.length+"/"+r;var e=function(){for(var e=0;e<t.length&&0==t[e];)e+=1;for(var n=new Array(t.length-e+r),o=0;o<t.length-e;o+=1)n[o]=t[o+e];return n}(),n={getAt:function(t){return e[t]},getLength:function(){return e.length},multiply:function(t){for(var r=new Array(n.getLength()+t.getLength()-1),e=0;e<n.getLength();e+=1)for(var o=0;o<t.getLength();o+=1)r[e+o]^=C.gexp(C.glog(n.getAt(e))+C.glog(t.getAt(o)));return k(r,0)},mod:function(t){if(n.getLength()-t.getLength()<0)return n;for(var r=C.glog(n.getAt(0))-C.glog(t.getAt(0)),e=new Array(n.getLength()),o=0;o<n.getLength();o+=1)e[o]=n.getAt(o);for(o=0;o<t.getLength();o+=1)e[o]^=C.gexp(C.glog(t.getAt(o))+r);return k(e,0).mod(t)}};return n}var A=function(){var t=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12,7,37,13],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],r=function(t,r){var e={};return e.totalCount=t,e.dataCount=r,e},e={};return e.getRSBlocks=function(e,n){var o=function(r,e){switch(e){case g.L:return t[4*(r-1)+0];case g.M:return t[4*(r-1)+1];case g.Q:return t[4*(r-1)+2];case g.H:return t[4*(r-1)+3];default:return}}(e,n);if(void 0===o)throw"bad rs block @ typeNumber:"+e+"/errorCorrectionLevel:"+n;for(var i=o.length/3,a=[],u=0;u<i;u+=1)for(var f=o[3*u+0],c=o[3*u+1],l=o[3*u+2],h=0;h<f;h+=1)a.push(r(c,l));return a},e}(),b=function(){var t=[],r=0,e={getBuffer:function(){return t},getAt:function(r){var e=Math.floor(r/8);return 1==(t[e]>>>7-r%8&1)},put:function(t,r){for(var n=0;n<r;n+=1)e.putBit(1==(t>>>r-n-1&1))},getLengthInBits:function(){return r},putBit:function(e){var n=Math.floor(r/8);t.length<=n&&t.push(0),e&&(t[n]|=128>>>r%8),r+=1}};return e},M=function(t){var r=a,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+2<r.length;)t.put(o(r.substring(n,n+3)),10),n+=3;n<r.length&&(r.length-n==1?t.put(o(r.substring(n,n+1)),4):r.length-n==2&&t.put(o(r.substring(n,n+2)),7))}},o=function(t){for(var r=0,e=0;e<t.length;e+=1)r=10*r+i(t.charAt(e));return r},i=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);throw"illegal char :"+t};return n},x=function(t){var r=u,e=t,n={getMode:function(){return r},getLength:function(t){return e.length},write:function(t){for(var r=e,n=0;n+1<r.length;)t.put(45*o(r.charAt(n))+o(r.charAt(n+1)),11),n+=2;n<r.length&&t.put(o(r.charAt(n)),6)}},o=function(t){if("0"<=t&&t<="9")return t.charCodeAt(0)-"0".charCodeAt(0);if("A"<=t&&t<="Z")return t.charCodeAt(0)-"A".charCodeAt(0)+10;switch(t){case" ":return 36;case"$":return 37;case"%":return 38;case"*":return 39;case"+":return 40;case"-":return 41;case".":return 42;case"/":return 43;case":":return 44;default:throw"illegal char :"+t}};return n},m=function(r){var e=f,n=t.stringToBytes(r),o={getMode:function(){return e},getLength:function(t){return n.length},write:function(t){for(var r=0;r<n.length;r+=1)t.put(n[r],8)}};return o},L=function(r){var e=c,n=t.stringToBytesFuncs.SJIS;if(!n)throw"sjis not supported.";!function(t,r){var e=n("友");if(2!=e.length||38726!=(e[0]<<8|e[1]))throw"sjis not supported."}();var o=n(r),i={getMode:function(){return e},getLength:function(t){return~~(o.length/2)},write:function(t){for(var r=o,e=0;e+1<r.length;){var n=(255&r[e])<<8|255&r[e+1];if(33088<=n&&n<=40956)n-=33088;else{if(!(57408<=n&&n<=60351))throw"illegal char at "+(e+1)+"/"+n;n-=49472}n=192*(n>>>8&255)+(255&n),t.put(n,13),e+=2}if(e<r.length)throw"illegal char at "+(e+1)}};return i},D=function(){var t=[],r={writeByte:function(r){t.push(255&r)},writeShort:function(t){r.writeByte(t),r.writeByte(t>>>8)},writeBytes:function(t,e,n){e=e||0,n=n||t.length;for(var o=0;o<n;o+=1)r.writeByte(t[o+e])},writeString:function(t){for(var e=0;e<t.length;e+=1)r.writeByte(t.charCodeAt(e))},toByteArray:function(){return t},toString:function(){var r="";r+="[";for(var e=0;e<t.length;e+=1)e>0&&(r+=","),r+=t[e];return r+="]"}};return r},S=function(t){var r=t,e=0,n=0,o=0,i={read:function(){for(;o<8;){if(e>=r.length){if(0==o)return-1;throw"unexpected end of file./"+o}var t=r.charAt(e);if(e+=1,"="==t)return o=0,-1;t.match(/^\s$/)||(n=n<<6|a(t.charCodeAt(0)),o+=6)}var i=n>>>o-8&255;return o-=8,i}},a=function(t){if(65<=t&&t<=90)return t-65;if(97<=t&&t<=122)return t-97+26;if(48<=t&&t<=57)return t-48+52;if(43==t)return 62;if(47==t)return 63;throw"c:"+t};return i},I=function(t,r,e){for(var n=function(t,r){var e=t,n=r,o=new Array(t*r),i={setPixel:function(t,r,n){o[r*e+t]=n},write:function(t){t.writeString("GIF87a"),t.writeShort(e),t.writeShort(n),t.writeByte(128),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(0),t.writeByte(255),t.writeByte(255),t.writeByte(255),t.writeString(","),t.writeShort(0),t.writeShort(0),t.writeShort(e),t.writeShort(n),t.writeByte(0);var r=a(2);t.writeByte(2);for(var o=0;r.length-o>255;)t.writeByte(255),t.writeBytes(r,o,255),o+=255;t.writeByte(r.length-o),t.writeBytes(r,o,r.length-o),t.writeByte(0),t.writeString(";")}},a=function(t){for(var r=1<<t,e=1+(1<<t),n=t+1,i=u(),a=0;a<r;a+=1)i.add(String.fromCharCode(a));i.add(String.fromCharCode(r)),i.add(String.fromCharCode(e));var f,c,g,l=D(),h=(f=l,c=0,g=0,{write:function(t,r){if(t>>>r!=0)throw"length over";for(;c+r>=8;)f.writeByte(255&(t<<c|g)),r-=8-c,t>>>=8-c,g=0,c=0;g|=t<<c,c+=r},flush:function(){c>0&&f.writeByte(g)}});h.write(r,n);var s=0,v=String.fromCharCode(o[s]);for(s+=1;s<o.length;){var d=String.fromCharCode(o[s]);s+=1,i.contains(v+d)?v+=d:(h.write(i.indexOf(v),n),i.size()<4095&&(i.size()==1<<n&&(n+=1),i.add(v+d)),v=d)}return h.write(i.indexOf(v),n),h.write(e,n),h.flush(),l.toByteArray()},u=function(){var t={},r=0,e={add:function(n){if(e.contains(n))throw"dup key:"+n;t[n]=r,r+=1},size:function(){return r},indexOf:function(r){return t[r]},contains:function(r){return void 0!==t[r]}};return e};return i}(t,r),o=0;o<r;o+=1)for(var i=0;i<t;i+=1)n.setPixel(i,o,e(i,o));var a=D();n.write(a);for(var u=function(){var t=0,r=0,e=0,n="",o={},i=function(t){n+=String.fromCharCode(a(63&t))},a=function(t){if(t<0);else{if(t<26)return 65+t;if(t<52)return t-26+97;if(t<62)return t-52+48;if(62==t)return 43;if(63==t)return 47}throw"n:"+t};return o.writeByte=function(n){for(t=t<<8|255&n,r+=8,e+=1;r>=6;)i(t>>>r-6),r-=6},o.flush=function(){if(r>0&&(i(t<<6-r),t=0,r=0),e%3!=0)for(var o=3-e%3,a=0;a<o;a+=1)n+="="},o.toString=function(){return n},o}(),f=a.toByteArray(),c=0;c<f.length;c+=1)u.writeByte(f[c]);return u.flush(),"data:image/gif;base64,"+u};return t}();qrcode.stringToBytesFuncs["UTF-8"]=function(t){return function(t){for(var r=[],e=0;e<t.length;e++){var n=t.charCodeAt(e);n<128?r.push(n):n<2048?r.push(192|n>>6,128|63&n):n<55296||n>=57344?r.push(224|n>>12,128|n>>6&63,128|63&n):(e++,n=65536+((1023&n)<<10|1023&t.charCodeAt(e)),r.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return r}(t)},function(t){"function"==typeof define&&define.amd?define([],t):"object"==typeof exports&&(module.exports=t())}((function(){return qrcode}));</script>
+<script>
+(function(){
+/* ---------- os mundos: para abrir um novo, troque href:null pelo endereço ---------- */
+const MUNDOS=[
+  {id:'letras',tema:'Alfabetização',titulo:'Brincando com as Letras',cor:'#EE4F7B',href:'/letras/',
+   fala:'Aqui é o castelo das letras! Vamos brincar com o seu nome?',
+   txt:'10 trilhas com o nome, a família, a escola, os bichos, as parlendas, os contos e as cantigas de roda.'},
+  {id:'numeros',tema:'Matemática',titulo:'O Reino dos Números',cor:'#F7A823',href:null,
+   fala:'A roda-gigante dos números ainda está sendo montada. Logo vamos contar juntos!',
+   txt:'Contar, comparar e brincar com quantidades e formas.'},
+  {id:'bau',tema:'Cultura',titulo:'Baú das Tradições',cor:'#8752C8',href:null,
+   fala:'Que baú cheio de surpresas! Logo vamos abrir as festas, as músicas e os brinquedos do Brasil.',
+   txt:'Festas, músicas, brinquedos e histórias do Brasil.'},
+  {id:'ambiente',tema:'Meio ambiente',titulo:'Guardiões Mirins da Natureza',cor:'#3FA535',href:null,
+   fala:'Somos os guardiões mirins da natureza! Em breve vamos cuidar das plantas, dos bichos e da água!',
+   txt:'Cuidar das plantas, dos bichos, da água e do lixo.'},
+  {id:'emocoes',tema:'Emoções',titulo:'O Jardim das Emoções',cor:'#F28AB2',href:null,
+   fala:'Neste jardim as flores sentem como a gente: alegria, susto, tristeza. Logo vamos conversar sobre isso!',
+   txt:'Reconhecer e falar sobre alegria, medo, raiva e tristeza.'},
+  {id:'saude',tema:'Saúde',titulo:'Turminha do Bem-Estar',cor:'#E5484D',href:null,
+   fala:'Uma maçã bem saudável! Em breve vamos brincar de comer bem, beber água e se mexer.',
+   txt:'Alimentação, higiene, sono e movimento.'}
+];
+
+/* posições no mapa largo (1000x780) e no mapa de celular (400xH) */
+const LAYOUT={
+  largo:{W:1000,H:780,ceu:230,mw:'20%',rw:'5.4%',
+    pts:[[190,350],[500,305],[810,350],[810,625],[500,670],[190,625]],ini:[50,360]},
+  alto:{W:400,H:1100,ceu:150,mw:'46%',rw:'14%',
+    pts:[[118,280],[285,420],[118,560],[285,700],[118,840],[285,980]],ini:[330,215]}
+};
+
+const ART={
+letras:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<rect x="14" y="58" width="32" height="60" fill="#3E9BE0" stroke="#1B2A5E" stroke-width="1.6"/><rect x="39" y="58" width="7" height="60" fill="#2A7BBF"/>
+<path d="M17 76h22M22 88h18M17 110h20" stroke="#2A7BBF" stroke-width="1.6" opacity=".6"/>
+<path d="M11 59L30 28L49 59z" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.6" stroke-linejoin="round"/><path d="M30 28L49 59H34z" fill="#6A3BAA"/>
+<path d="M30 28v-10" stroke="#1B2A5E" stroke-width="1.6"/><g class="bandeira"><path d="M30 18h11l-3 4 3 4h-11z" fill="#FFD43B" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round"/></g>
+<path d="M25 102v-6a5 5 0 0 1 10 0v6z" fill="#FFE27A" stroke="#1B2A5E" stroke-width="1.4"/><path d="M30 91v11" stroke="#1B2A5E" stroke-width="1"/>
+<text x="29" y="84" font-family="Baloo 2,sans-serif" font-weight="800" font-size="17" text-anchor="middle" fill="#fff" stroke="#1B2A5E" stroke-width=".8" paint-order="stroke">A</text><rect x="114" y="58" width="32" height="60" fill="#3E9BE0" stroke="#1B2A5E" stroke-width="1.6"/><rect x="139" y="58" width="7" height="60" fill="#2A7BBF"/>
+<path d="M117 76h22M122 88h18M117 110h20" stroke="#2A7BBF" stroke-width="1.6" opacity=".6"/>
+<path d="M111 59L130 28L149 59z" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.6" stroke-linejoin="round"/><path d="M130 28L149 59H134z" fill="#6A3BAA"/>
+<path d="M130 28v-10" stroke="#1B2A5E" stroke-width="1.6"/><g class="bandeira"><path d="M130 18h11l-3 4 3 4h-11z" fill="#FFD43B" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round"/></g>
+<path d="M125 102v-6a5 5 0 0 1 10 0v6z" fill="#FFE27A" stroke="#1B2A5E" stroke-width="1.4"/><path d="M130 91v11" stroke="#1B2A5E" stroke-width="1"/>
+<text x="129" y="84" font-family="Baloo 2,sans-serif" font-weight="800" font-size="17" text-anchor="middle" fill="#fff" stroke="#1B2A5E" stroke-width=".8" paint-order="stroke">C</text>
+<rect x="42" y="40" width="76" height="78" fill="#F9B233" stroke="#1B2A5E" stroke-width="1.8"/><rect x="108" y="40" width="10" height="78" fill="#E08A00"/>
+<path d="M40 41v-12h9v6h8v-6h9v6h8v-6h9v6h8v-6h9v6h8v-6h9v12z" fill="#F9B233" stroke="#1B2A5E" stroke-width="1.6" stroke-linejoin="round"/>
+<path d="M46 60h20M88 52h18M50 90h14M96 84h14" stroke="#E08A00" stroke-width="1.8" opacity=".7"/>
+<path d="M80 29V8" stroke="#1B2A5E" stroke-width="1.8"/><g class="bandeira"><path d="M80 8h20l-5 6 5 6H80z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/></g>
+<path d="M64 118V96a16 16 0 0 1 32 0v22z" fill="#8A5A2B" stroke="#1B2A5E" stroke-width="1.8"/><path d="M72 118V88M80 118V80M88 118V88" stroke="#6E441E" stroke-width="1.6"/><circle cx="90" cy="104" r="1.8" fill="#FFD43B"/>
+<path d="M58 54h44l-4 22H62z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.6" stroke-linejoin="round"/><path d="M58 54l-6 6 6 4M102 54l6 6-6 4" fill="#C2185B" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round"/>
+<text x="80" y="72" font-family="Baloo 2,sans-serif" font-weight="800" font-size="19" text-anchor="middle" fill="#fff">B</text>
+<path d="M46 34q17 10 34 0q17 10 34 0" stroke="#1B2A5E" stroke-width="1" fill="none"/><g><path d="M49 36l3 7 3-7z" fill="#3FA535"/><path d="M60 39l3 7 3-7z" fill="#2490D6"/><path d="M71 37l3 7 3-7z" fill="#8752C8"/><path d="M83 37l3 7 3-7z" fill="#F7A823"/><path d="M94 39l3 7 3-7z" fill="#16A3B0"/><path d="M105 36l3 7 3-7z" fill="#EE4F7B"/></g>
+<path d="M70 118q-4 6-10 10M90 118q4 6 10 10" stroke="#E9D3B0" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+<g><path d="M26 110h13l3.9 -3.9h-13z" fill="#fff" opacity=".55"/><rect x="26" y="110" width="13" height="13" rx="2" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.4"/><path d="M39 110l3.9 -3.9v13l-3.9 3.9z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round" opacity=".8"/><text x="32.5" y="120.14" font-family="Baloo 2,sans-serif" font-weight="800" font-size="10.4" text-anchor="middle" fill="#fff">L</text></g><g><path d="M122 112h12l3.5999999999999996 -3.5999999999999996h-12z" fill="#fff" opacity=".55"/><rect x="122" y="112" width="12" height="12" rx="2" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.4"/><path d="M134 112l3.5999999999999996 -3.5999999999999996v12l-3.5999999999999996 3.5999999999999996z" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round" opacity=".8"/><text x="128" y="121.36" font-family="Baloo 2,sans-serif" font-weight="800" font-size="9.600000000000001" text-anchor="middle" fill="#fff">E</text></g>
+<path class="brilho" style="animation-delay:0s" d="M10 24l1.7 4.3 4.3 1.7-4.3 1.7-1.7 4.3-1.7-4.3-4.3-1.7 4.3-1.7z" fill="#FFE27A"/><path class="brilho" style="animation-delay:0.8s" d="M150 17l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#FFE27A"/><path class="brilho" style="animation-delay:1.5s" d="M152 76l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1z" fill="#fff"/></svg>`,
+numeros:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<g><path d="M10 118V92h26v26" fill="#fff" stroke="#1B2A5E" stroke-width="1.5"/><path d="M6 94l17-12 17 12z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 94h4v-3h4v3h4v-3h4v3h4v-3h4v3" stroke="#fff" stroke-width="2"/><rect x="15" y="99" width="16" height="10" rx="2" fill="#BFE6FF" stroke="#1B2A5E" stroke-width="1.2"/><text x="23" y="107" font-family="Baloo 2,sans-serif" font-weight="800" font-size="8" text-anchor="middle" fill="#1B2A5E">1 2 3</text></g>
+<path d="M82 58L56 117M82 58l26 59" stroke="#1B2A5E" stroke-width="9" stroke-linecap="round"/><path d="M82 58L56 117M82 58l26 59" stroke="#8752C8" stroke-width="6" stroke-linecap="round"/><path d="M64 100h36" stroke="#A576E0" stroke-width="4" stroke-linecap="round"/>
+<rect x="48" y="112" width="68" height="7" rx="3.5" fill="#E9D8FF" stroke="#1B2A5E" stroke-width="1.3"/>
+<g class="roda"><circle cx="82" cy="58" r="45" fill="none" stroke="#1B2A5E" stroke-width="8.5"/><circle cx="82" cy="58" r="45" fill="none" stroke="#F7A823" stroke-width="5.5"/><circle cx="82" cy="58" r="45" fill="none" stroke="#FFE27A" stroke-width="2" stroke-dasharray="1.5 6" stroke-linecap="round"/><circle cx="82" cy="58" r="28" fill="none" stroke="#FFD25A" stroke-width="2.6"/>
+<g stroke-width="2.6" stroke-linecap="round"><path d="M37 58L127 58" stroke="#EE4F7B"/><path d="M43 35.5L121 80.5" stroke="#F7A823"/><path d="M59.5 19L104.5 97" stroke="#3FA535"/><path d="M82 13L82 103" stroke="#2490D6"/><path d="M104.5 19L59.5 97" stroke="#8752C8"/><path d="M121 35.5L43 80.5" stroke="#16A3B0"/></g>
+<g font-family="Baloo 2,sans-serif" font-weight="800" font-size="12" text-anchor="middle" fill="#fff">
+<g class="cab"><path d="M82 13v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M71 18h22l-2 15q-9 4-18 0z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M70 18q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="82" y="30">1</text></g><g class="cab"><path d="M121 35.5v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M110 40.5h22l-2 15q-9 4-18 0z" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M109 40.5q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="121" y="52.5">2</text></g><g class="cab"><path d="M121 80.5v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M110 85.5h22l-2 15q-9 4-18 0z" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M109 85.5q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="121" y="97.5">3</text></g><g class="cab"><path d="M82 103v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M71 108h22l-2 15q-9 4-18 0z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M70 108q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="82" y="120">4</text></g><g class="cab"><path d="M43 80.5v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M32 85.5h22l-2 15q-9 4-18 0z" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M31 85.5q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="43" y="97.5">5</text></g><g class="cab"><path d="M43 35.5v4" stroke="#1B2A5E" stroke-width="1.6"/><path d="M32 40.5h22l-2 15q-9 4-18 0z" fill="#16A3B0" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M31 40.5q12-6 24 0" fill="#fff" stroke="#1B2A5E" stroke-width="1.2"/><text x="43" y="52.5">6</text></g></g></g>
+<circle cx="82" cy="58" r="8" fill="#FFC531" stroke="#1B2A5E" stroke-width="1.6"/><path class="" style="animation-delay:0s" d="M82 53l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#fff"/>
+<g class="sobe-item"><path d="M142 28q-9-1-9 9 0 8 9 13 9-5 9-13 0-10-9-9z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="139" cy="33" rx="2" ry="3" fill="#fff" opacity=".5"/><path d="M142 50q-3 10 1 22" stroke="#1B2A5E" stroke-width="1" fill="none"/><text x="142" y="44" font-family="Baloo 2,sans-serif" font-weight="800" font-size="11" text-anchor="middle" fill="#fff">7</text></g>
+<g class="sobe-item" style="animation-delay:-1.2s"><path d="M130 52q-8-1-8 8 0 7 8 11 8-4 8-11 0-9-8-8z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.3"/><path d="M130 71q2 8-2 18" stroke="#1B2A5E" stroke-width="1" fill="none"/><text x="130" y="65" font-family="Baloo 2,sans-serif" font-weight="800" font-size="10" text-anchor="middle" fill="#fff">8</text></g>
+<g class="sobe-item" style="animation-delay:-2s"><path d="M150 60q-7-1-7 7 0 6 7 10 7-4 7-10 0-8-7-7z" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.3"/><path d="M150 77q-2 8 1 16" stroke="#1B2A5E" stroke-width="1" fill="none"/><text x="150" y="72" font-family="Baloo 2,sans-serif" font-weight="800" font-size="9" text-anchor="middle" fill="#fff">9</text></g>
+<path class="brilho" style="animation-delay:0s" d="M14 25l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#FFE27A"/><path class="brilho" style="animation-delay:1s" d="M30 60.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#fff"/></svg>`,
+ambiente:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<path d="M76 104q2-24-1-50h12q-4 26 0 50z" fill="#8A5A2B" stroke="#1B2A5E" stroke-width="1.6"/><path d="M77 78q-11-3-17-12M85 72q9-2 15-11" stroke="#1B2A5E" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M77 78q-11-3-17-12M85 72q9-2 15-11" stroke="#8A5A2B" stroke-width="3.8" fill="none" stroke-linecap="round"/>
+<g class="folhas"><g stroke="#1B2A5E" stroke-width="1.6"><circle cx="80" cy="32" r="25" fill="#3FA535"/><circle cx="57" cy="46" r="17" fill="#3FA535"/><circle cx="104" cy="45" r="18" fill="#3FA535"/><circle cx="68" cy="22" r="15" fill="#3FA535"/><circle cx="95" cy="23" r="14" fill="#3FA535"/></g>
+<g fill="#3FA535"><circle cx="80" cy="32" r="23.4"/><circle cx="57" cy="46" r="15.4"/><circle cx="104" cy="45" r="16.4"/><circle cx="68" cy="22" r="13.4"/><circle cx="95" cy="23" r="12.4"/></g>
+<g fill="#5CC24F"><circle cx="72" cy="26" r="13"/><circle cx="99" cy="35" r="10"/><circle cx="55" cy="43" r="8"/></g><circle cx="64" cy="18" r="4" fill="#fff" opacity=".35"/>
+<g fill="#EE4F7B" stroke="#1B2A5E" stroke-width=".9"><circle cx="60" cy="50" r="3.6"/><circle cx="92" cy="40" r="3.6"/><circle cx="78" cy="50" r="3.6"/><circle cx="108" cy="50" r="3.2"/><circle cx="74" cy="32" r="3.2"/><circle cx="100" cy="24" r="3"/></g>
+<g transform="translate(52 22)"><path d="M-7 0q7 6 14 0" fill="#B5763A" stroke="#1B2A5E" stroke-width="1.1"/><circle cx="-2.6" cy="-1" r="2.3" fill="#7CC8F2" stroke="#1B2A5E" stroke-width=".8"/><circle cx="2.6" cy="-1" r="2.3" fill="#FFD43B" stroke="#1B2A5E" stroke-width=".8"/></g></g>
+<g transform="translate(8 92)"><rect x="0" y="4" width="13" height="16" rx="2" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.2"/><rect x="-1.5" y="1" width="16" height="4.5" rx="2" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.1"/><path d="M4 10l2.5 4h-5z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round" transform="translate(2.5 0)"/></g>
+<rect x="27.5" y="104" width="5.5" height="12" rx="2" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.2"/><rect x="35" y="104" width="5.5" height="12" rx="2" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.2"/><ellipse cx="29.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><ellipse cx="38.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><path d="M25 107q0-14 9-15q9 1 9 15z" fill="#3FA535" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M28 94L22 98" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M28 94L22 98" stroke="#3FA535" stroke-width="3.2" stroke-linecap="round"/><circle cx="22" cy="98" r="2.4" fill="#F6D2B0" stroke="#1B2A5E" stroke-width="1"/><path d="M40 94L46 90" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M40 94L46 90" stroke="#3FA535" stroke-width="3.2" stroke-linecap="round"/><circle cx="46" cy="90" r="2.4" fill="#F6D2B0" stroke="#1B2A5E" stroke-width="1"/><circle cx="24" cy="79" r="4" fill="#7A4B22" stroke="#1B2A5E" stroke-width="1.1"/><circle cx="44" cy="79" r="4" fill="#7A4B22" stroke="#1B2A5E" stroke-width="1.1"/><circle cx="24" cy="76" r="1.6" fill="#EE4F7B"/><circle cx="44" cy="76" r="1.6" fill="#EE4F7B"/><circle cx="34" cy="82" r="9.5" fill="#F6D2B0" stroke="#1B2A5E" stroke-width="1.3"/><path d="M24.5 81q1-10 9.5-10q8.5 0 9.5 10q-4-5-9.5-5.5q-5 .5-9.5 5.5z" fill="#7A4B22" stroke="#1B2A5E" stroke-width="1.1" stroke-linejoin="round"/><circle cx="30.6" cy="82.5" r="1.3" fill="#1B2A5E"/><circle cx="37.4" cy="82.5" r="1.3" fill="#1B2A5E"/><path d="M31.2 86q2.8 2.8 5.6 0" stroke="#1B2A5E" stroke-width="1.2" fill="none" stroke-linecap="round"/><ellipse cx="28" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><ellipse cx="40" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><g transform="translate(18 92) rotate(-20)"><rect x="-2.6" y="-6" width="5.2" height="10" rx="2" fill="#BFE6FF" stroke="#1B2A5E" stroke-width="1"/><rect x="-1.4" y="-8.4" width="2.8" height="2.6" fill="#2490D6"/></g><g transform="translate(48 86)"><path d="M0 0q-4-6 2-9 4 4-2 9z" fill="#5CC24F" stroke="#1B2A5E" stroke-width=".9"/></g>
+<rect x="73.5" y="104" width="5.5" height="12" rx="2" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.2"/><rect x="81" y="104" width="5.5" height="12" rx="2" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.2"/><ellipse cx="75.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><ellipse cx="84.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><path d="M71 107q0-14 9-15q9 1 9 15z" fill="#F7C53A" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M74 94L70 99" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M74 94L70 99" stroke="#F7C53A" stroke-width="3.2" stroke-linecap="round"/><circle cx="70" cy="99" r="2.4" fill="#8A5A2B" stroke="#1B2A5E" stroke-width="1"/><path d="M86 94L94 92" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M86 94L94 92" stroke="#F7C53A" stroke-width="3.2" stroke-linecap="round"/><circle cx="94" cy="92" r="2.4" fill="#8A5A2B" stroke="#1B2A5E" stroke-width="1"/><circle cx="72" cy="75" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="76" cy="71" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="81" cy="70" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="86" cy="72" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="89" cy="76" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="70" cy="80" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="90" cy="80" r="4.4" fill="#1B1B2E" stroke="#1B2A5E" stroke-width="1"/><circle cx="80" cy="82" r="9.5" fill="#8A5A2B" stroke="#1B2A5E" stroke-width="1.3"/><circle cx="74" cy="75" r="3.6" fill="#1B1B2E"/><circle cx="79" cy="73" r="3.6" fill="#1B1B2E"/><circle cx="85" cy="75" r="3.6" fill="#1B1B2E"/><circle cx="76.6" cy="82.5" r="1.3" fill="#1B2A5E"/><circle cx="83.4" cy="82.5" r="1.3" fill="#1B2A5E"/><path d="M77.2 86q2.8 2.8 5.6 0" stroke="#1B2A5E" stroke-width="1.2" fill="none" stroke-linecap="round"/><ellipse cx="74" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><ellipse cx="86" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><g transform="translate(92 86)"><path d="M0 4h12l-1.4 10H1.4z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.2"/><path d="M12 7l8-5" stroke="#1B2A5E" stroke-width="3.4" stroke-linecap="round"/><path d="M12 7l8-5" stroke="#2490D6" stroke-width="1.8" stroke-linecap="round"/><path d="M2 4q4-6 8 0" stroke="#1B2A5E" stroke-width="1.4" fill="none"/></g><g fill="#7CC8F2"><circle cx="113" cy="84" r="1.3"/><circle cx="115" cy="88" r="1.3"/><circle cx="112" cy="92" r="1.3"/></g>
+<g transform="translate(114 116)"><path d="M0 0v-9" stroke="#3FA535" stroke-width="1.8"/><path d="M0-7q-6-1-7-6q6 0 7 6M0-7q6-1 7-6q-6 0-7 6" fill="#5CC24F" stroke="#1B2A5E" stroke-width=".9"/></g>
+<rect x="125.5" y="104" width="5.5" height="12" rx="2" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.2"/><rect x="133" y="104" width="5.5" height="12" rx="2" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.2"/><ellipse cx="127.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><ellipse cx="136.5" cy="116.5" rx="4.6" ry="2.4" fill="#fff" stroke="#1B2A5E" stroke-width="1.1"/><path d="M123 107q0-14 9-15q9 1 9 15z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M126 94L124 100" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M126 94L124 100" stroke="#2490D6" stroke-width="3.2" stroke-linecap="round"/><circle cx="124" cy="100" r="2.4" fill="#E8B48A" stroke="#1B2A5E" stroke-width="1"/><path d="M138 94L140 100" stroke="#1B2A5E" stroke-width="5" stroke-linecap="round"/><path d="M138 94L140 100" stroke="#2490D6" stroke-width="3.2" stroke-linecap="round"/><circle cx="140" cy="100" r="2.4" fill="#E8B48A" stroke="#1B2A5E" stroke-width="1"/><circle cx="132" cy="82" r="9.5" fill="#E8B48A" stroke="#1B2A5E" stroke-width="1.3"/><path d="M122.5 80q0-9 9.5-9.5q9.5.5 9.5 9.5z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.2"/><path d="M139 79h8q1 2-1 3h-7z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.1" stroke-linejoin="round"/><circle cx="132" cy="71" r="1.6" fill="#FFD43B"/><path d="M123 81q2 3 3 0" fill="#3B2414"/><circle cx="128.6" cy="82.5" r="1.3" fill="#1B2A5E"/><circle cx="135.4" cy="82.5" r="1.3" fill="#1B2A5E"/><path d="M129.2 86q2.8 2.8 5.6 0" stroke="#1B2A5E" stroke-width="1.2" fill="none" stroke-linecap="round"/><ellipse cx="126" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><ellipse cx="138" cy="85.4" rx="1.8" ry="1.2" fill="#FF6F91" opacity=".55"/><g transform="translate(132 100)"><path d="M-6 0h12l-2 9h-8z" fill="#C0602F" stroke="#1B2A5E" stroke-width="1.1"/><rect x="-7" y="-2" width="14" height="3" rx="1" fill="#D9773F" stroke="#1B2A5E" stroke-width="1"/><path d="M0-2v-7" stroke="#3FA535" stroke-width="1.6"/><path d="M0-6q-5-1-6-5q5 0 6 5M0-6q5-1 6-5q-5 0-6 5" fill="#5CC24F" stroke="#1B2A5E" stroke-width=".8"/></g>
+<g class="borboleta"><g transform="translate(140 50)"><path class="asa" d="M0 0q-9-9-11 0q2 8 11 0z" fill="#F28AB2" stroke="#1B2A5E" stroke-width=".8"/><path d="M0 0q9-9 11 0q-2 8-11 0z" fill="#A576E0" stroke="#1B2A5E" stroke-width=".8"/><path d="M0-5v10" stroke="#1B2A5E" stroke-width="2.2" stroke-linecap="round"/><path d="M0-5l-2-4M0-5l2-4" stroke="#1B2A5E" stroke-width=".8"/></g></g>
+<path class="brilho" style="animation-delay:0s" d="M20 25.5l1.3 3.2 3.2 1.3-3.2 1.3-1.3 3.2-1.3-3.2-3.2-1.3 3.2-1.3z" fill="#FFE27A"/><path class="brilho" style="animation-delay:1s" d="M144 20l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1z" fill="#FFE27A"/></svg>`,
+juntos:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="76" ry="13" fill="#B97A45"/><ellipse cx="80" cy="141" rx="76" ry="13" fill="#6DBB4A"/><ellipse cx="80" cy="138" rx="68" ry="9" fill="#9BD96F"/>
+<ellipse cx="80" cy="110" rx="66" ry="26" fill="#9BD96F"/>
+<g transform="translate(80 58)"><path d="M-46 0a46 46 0 0 1 92 0" stroke="#F28AB2" stroke-width="7" fill="none"/><path d="M-38 0a38 38 0 0 1 76 0" stroke="#FFE27A" stroke-width="7" fill="none"/><path d="M-30 0a30 30 0 0 1 60 0" stroke="#7CCBFF" stroke-width="7" fill="none"/></g>
+<g transform="translate(80 104)"><g class="ciranda">
+<circle r="34" fill="none" stroke="#1B2A5E" stroke-width="3" stroke-dasharray="4 6" opacity=".35"/>
+${['#EE4F7B','#2490D6','#F7A823','#8752C8','#16A3B0','#3FA535'].map((c,k)=>{const a=k*60*Math.PI/180,x=(Math.cos(a)*34).toFixed(1),y=(Math.sin(a)*34).toFixed(1);const pele=['#F4C79A','#8A5A2B','#E0A878','#5C3A1E','#F4C79A','#C68B59'][k];return `<g transform="translate(${x} ${y})"><g class="pe"><path d="M-9 6q9-22 18 0z" fill="${c}"/><circle cy="-10" r="7" fill="${pele}"/></g></g>`}).join('')}
+</g></g></svg>`,
+bau:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<path d="M2 20q78 30 156 0" stroke="#1B2A5E" stroke-width="1.2" fill="none"/>
+<path d="M2 22.2l6 11 6-11z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M16 26.7l6 11 6-11z" fill="#F7A823" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M30 30.2l6 11 6-11z" fill="#3FA535" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M44 32.8l6 11 6-11z" fill="#2490D6" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M58 34.4l6 11 6-11z" fill="#8752C8" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M72 35l6 11 6-11z" fill="#16A3B0" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M86 34.6l6 11 6-11z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M100 33.3l6 11 6-11z" fill="#F7A823" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M114 31.1l6 11 6-11z" fill="#3FA535" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M128 27.8l6 11 6-11z" fill="#2490D6" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/><path d="M142 23.6l6 11 6-11z" fill="#8752C8" stroke="#1B2A5E" stroke-width=".9" stroke-linejoin="round"/>
+<ellipse cx="80" cy="66" rx="46" ry="30" fill="#FFE27A" opacity=".5"/><ellipse cx="80" cy="70" rx="32" ry="18" fill="#FFF3B0" opacity=".7"/>
+<g transform="rotate(-14 34 78)"><path d="M34 78q0-30 46-30t46 30z" fill="#B46A33" stroke="#1B2A5E" stroke-width="1.8"/><path d="M40 72q6-20 40-20t40 20" fill="none" stroke="#8A4E22" stroke-width="2"/><path d="M50 78q2-22 10-27M110 78q-2-22-10-27" stroke="#F7C53A" stroke-width="6" fill="none"/><path d="M50 78q2-22 10-27M110 78q-2-22-10-27" stroke="#1B2A5E" stroke-width="1" fill="none" opacity=".5"/></g>
+<g class="sobe-item"><circle cx="62" cy="54" r="13" fill="#F4D7A1" stroke="#1B2A5E" stroke-width="1.6"/><circle cx="62" cy="54" r="9" fill="#FBE7C2"/><g fill="#C9C9C9" stroke="#1B2A5E" stroke-width=".8"><circle cx="74" cy="54" r="2.2"/><circle cx="68" cy="64.4" r="2.2"/><circle cx="56" cy="64.4" r="2.2"/><circle cx="50" cy="54" r="2.2"/><circle cx="56" cy="43.6" r="2.2"/><circle cx="68" cy="43.6" r="2.2"/></g><path d="M57 51q5 6 10 0" stroke="#E8352E" stroke-width="1.4" fill="none"/></g>
+<g class="sobe-item" style="animation-delay:-.8s"><path d="M98 62l-7-22M98 62l0-25M98 62l7-22" stroke="#1B2A5E" stroke-width="5.5" stroke-linecap="round"/><path d="M98 62l-7-22M98 62l0-25M98 62l7-22" stroke="#EE4F7B" stroke-width="3.5" stroke-linecap="round"/><path d="M91 40l-2-7M98 37v-7M105 40l2-7" stroke="#F7A823" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="98" cy="66" rx="7.5" ry="5.5" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.4"/></g>
+<g class="sobe-item" style="animation-delay:-1.6s"><path d="M120 48q10 4 6 14" stroke="#16A3B0" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M118 46q-6 8 2 14" stroke="#F7A823" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="121" cy="45" r="2.4" fill="#EE4F7B"/></g>
+<path d="M30 80h100v32q0 6-6 6H36q-6 0-6-6z" fill="#9A5B2C" stroke="#1B2A5E" stroke-width="1.8"/><path d="M30 80h100v9H30z" fill="#7A4520" stroke="#1B2A5E" stroke-width="1.4"/>
+<path d="M36 98h20M64 104h22M96 98h24" stroke="#7A4520" stroke-width="1.6" opacity=".8"/>
+<g fill="#F7C53A" stroke="#1B2A5E" stroke-width="1.2"><rect x="44" y="80" width="8" height="38"/><rect x="108" y="80" width="8" height="38"/></g>
+<rect x="70" y="86" width="20" height="20" rx="4" fill="#F7C53A" stroke="#1B2A5E" stroke-width="1.5"/><circle cx="80" cy="94" r="3" fill="#1B2A5E"/><path d="M80 95v6" stroke="#1B2A5E" stroke-width="2.4" stroke-linecap="round"/>
+<g fill="#F7C53A" stroke="#1B2A5E" stroke-width=".8"><circle cx="26" cy="114" r="4"/><circle cx="33" cy="117" r="3.6"/><circle cx="134" cy="115" r="4"/></g>
+<path class="brilho" style="animation-delay:0s" d="M24 45l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#FFE27A"/><path class="brilho" style="animation-delay:1s" d="M138 66l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1z" fill="#FFE27A"/><path class="brilho" style="animation-delay:0.5s" d="M80 36.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z" fill="#fff"/></svg>`,
+cidade:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="76" ry="13" fill="#B97A45"/><ellipse cx="80" cy="141" rx="76" ry="13" fill="#6DBB4A"/><ellipse cx="80" cy="138" rx="68" ry="9" fill="#9BD96F"/>
+<rect x="14" y="60" width="38" height="76" rx="4" fill="#2490D6"/><rect x="56" y="26" width="44" height="110" rx="4" fill="#F7A823"/><rect x="104" y="50" width="40" height="86" rx="4" fill="#EE4F7B"/>
+<g fill="#FFF7D6">${[0,1,2,3].map(r=>`<rect x="22" y="${70+r*16}" width="8" height="9" rx="2"/><rect x="36" y="${70+r*16}" width="8" height="9" rx="2"/>`).join('')}${[0,1,2,3,4,5].map(r=>`<rect x="64" y="${36+r*15}" width="10" height="9" rx="2"/><rect x="82" y="${36+r*15}" width="10" height="9" rx="2"/>`).join('')}${[0,1,2,3].map(r=>`<rect x="112" y="${60+r*16}" width="9" height="9" rx="2"/><rect x="127" y="${60+r*16}" width="9" height="9" rx="2"/>`).join('')}</g>
+<rect x="70" y="118" width="16" height="18" rx="3" fill="#7A4318"/>
+<g class="onibus"><rect x="4" y="112" width="52" height="24" rx="8" fill="#FFC531"/><rect x="10" y="117" width="10" height="8" rx="2" fill="#CDEBFF"/><rect x="24" y="117" width="10" height="8" rx="2" fill="#CDEBFF"/><rect x="38" y="117" width="12" height="8" rx="2" fill="#CDEBFF"/><circle cx="16" cy="137" r="5" fill="#1B2A5E"/><circle cx="44" cy="137" r="5" fill="#1B2A5E"/></g>
+<rect x="148" y="86" width="10" height="26" rx="4" fill="#1B2A5E"/><circle cx="153" cy="92" r="3" fill="#E5484D"/><circle cx="153" cy="100" r="3" fill="#F7A823"/><circle class="brilho" cx="153" cy="107" r="3" fill="#3FA535"/><path d="M153 112v26" stroke="#1B2A5E" stroke-width="3"/></svg>`,
+emocoes:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<g stroke="#1B2A5E" stroke-width="1.2"><path d="M10 118V100M150 118V100" stroke-width="2.4"/><path d="M8 104h12M8 111h12M140 104h12M140 111h12" stroke="#fff" stroke-width="2.6"/></g>
+<path d="M40 83Q35 108 40 118" stroke="#1B2A5E" stroke-width="5.5" fill="none"/><path d="M40 83Q35 108 40 118" stroke="#3D8B2E" stroke-width="3.5" fill="none"/><path d="M40 112q15 -3 18 -15q-13 -1 -18 15z" fill="#4DB843" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M40 106q-12 -2 -15 -12q11 0 15 12z" fill="#5CC24F" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/>
+<g class="flor"><ellipse cx="55" cy="68" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="50.6" cy="78.6" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="40" cy="83" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="29.4" cy="78.6" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="25" cy="68" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="29.4" cy="57.4" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="40" cy="53" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="50.6" cy="57.4" rx="8.3" ry="8.3" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="55" cy="68" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="50.6" cy="78.6" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="40" cy="83" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="29.4" cy="78.6" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="25" cy="68" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="29.4" cy="57.4" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="40" cy="53" rx="6.3" ry="6.3" fill="#F7A823"/><ellipse cx="50.6" cy="57.4" rx="6.3" ry="6.3" fill="#F7A823"/><circle cx="40" cy="68" r="13.2" fill="#FFD25A" stroke="#1B2A5E" stroke-width="1.4"/><g><ellipse cx="34.3" cy="66.6" rx="2.6" ry="3.1" fill="#1B2A5E"/><ellipse cx="45.7" cy="66.6" rx="2.6" ry="3.1" fill="#1B2A5E"/><circle cx="35.1" cy="65.4" r="1" fill="#fff"/><circle cx="46.5" cy="65.4" r="1" fill="#fff"/><ellipse cx="29.8" cy="71.8" rx="3" ry="2" fill="#FF6F91" opacity=".55"/><ellipse cx="50.2" cy="71.8" rx="3" ry="2" fill="#FF6F91" opacity=".55"/><path d="M35.1 71.5q4.9 6 9.8 0z" fill="#C2185B" stroke="#1B2A5E" stroke-width="1.5" stroke-linejoin="round"/></g></g><path d="M80 69Q85 92 80 118" stroke="#1B2A5E" stroke-width="5.5" fill="none"/><path d="M80 69Q85 92 80 118" stroke="#3D8B2E" stroke-width="3.5" fill="none"/><path d="M80 96q-15 -3 -18 -15q13 -1 18 15z" fill="#4DB843" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M80 90q12 -2 15 -12q-11 0 -15 12z" fill="#5CC24F" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/>
+<g class="flor"><ellipse cx="97" cy="52" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="92" cy="64" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="80" cy="69" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="68" cy="64" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="63" cy="52" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="68" cy="40" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="80" cy="35" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="92" cy="40" rx="9.4" ry="9.4" fill="#F28AB2" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="97" cy="52" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="92" cy="64" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="80" cy="69" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="68" cy="64" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="63" cy="52" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="68" cy="40" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="80" cy="35" rx="7.1" ry="7.1" fill="#F28AB2"/><ellipse cx="92" cy="40" rx="7.1" ry="7.1" fill="#F28AB2"/><circle cx="80" cy="52" r="15" fill="#FFC2D6" stroke="#1B2A5E" stroke-width="1.4"/><g><ellipse cx="73.5" cy="50.5" rx="2.9" ry="3.6" fill="#1B2A5E"/><ellipse cx="86.5" cy="50.5" rx="2.9" ry="3.6" fill="#1B2A5E"/><circle cx="74.4" cy="49.1" r="1.2" fill="#fff"/><circle cx="87.4" cy="49.1" r="1.2" fill="#fff"/><ellipse cx="68.4" cy="56.3" rx="3.4" ry="2.3" fill="#FF6F91" opacity=".55"/><ellipse cx="91.6" cy="56.3" rx="3.4" ry="2.3" fill="#FF6F91" opacity=".55"/><ellipse cx="80" cy="58.2" rx="2.9" ry="3.7" fill="#C2185B" stroke="#1B2A5E" stroke-width="1.5"/><path d="M70 43.5l4.6 -1.5M90 43.5l-4.6 -1.5" stroke="#1B2A5E" stroke-width="1.5" stroke-linecap="round"/></g></g><path d="M120 85Q115 110 120 118" stroke="#1B2A5E" stroke-width="5.5" fill="none"/><path d="M120 85Q115 110 120 118" stroke="#3D8B2E" stroke-width="3.5" fill="none"/><path d="M120 114q15 -3 18 -15q-13 -1 -18 15z" fill="#4DB843" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M120 108q-12 -2 -15 -12q11 0 15 12z" fill="#5CC24F" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/>
+<g class="flor"><ellipse cx="135" cy="70" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="130.6" cy="80.6" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="120" cy="85" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="109.4" cy="80.6" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="105" cy="70" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="109.4" cy="59.4" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="120" cy="55" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="130.6" cy="59.4" rx="8.3" ry="8.3" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="135" cy="70" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="130.6" cy="80.6" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="120" cy="85" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="109.4" cy="80.6" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="105" cy="70" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="109.4" cy="59.4" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="120" cy="55" rx="6.3" ry="6.3" fill="#4FB3E8"/><ellipse cx="130.6" cy="59.4" rx="6.3" ry="6.3" fill="#4FB3E8"/><circle cx="120" cy="70" r="13.2" fill="#BFE6FF" stroke="#1B2A5E" stroke-width="1.4"/><g><ellipse cx="114.3" cy="68.6" rx="2.6" ry="3.1" fill="#1B2A5E"/><ellipse cx="125.7" cy="68.6" rx="2.6" ry="3.1" fill="#1B2A5E"/><circle cx="115.1" cy="67.4" r="1" fill="#fff"/><circle cx="126.5" cy="67.4" r="1" fill="#fff"/><ellipse cx="109.8" cy="73.8" rx="3" ry="2" fill="#FF6F91" opacity=".55"/><ellipse cx="130.2" cy="73.8" rx="3" ry="2" fill="#FF6F91" opacity=".55"/><path d="M115.4 76.8q4.6 -4.1 9.3 0" stroke="#1B2A5E" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M128.5 71.4q1.9 3.5 0 5.7q-1.9 -2.2 0 -5.7z" fill="#7CC8F2"/><path d="M111.1 63.9l4.1 -1.9M128.9 63.9l-4.1 -1.9" stroke="#1B2A5E" stroke-width="1.4" stroke-linecap="round"/></g></g>
+<g class="sobe-item"><path d="M80 14c-3-5-12-4-12 2 0 6 7 9 12 13 5-4 12-7 12-13 0-6-9-7-12-2z" fill="#EE4F7B" stroke="#1B2A5E" stroke-width="1.3"/><ellipse cx="74" cy="15" rx="2" ry="1.4" fill="#fff" opacity=".6"/></g>
+<g class="sobe-item" style="animation-delay:-1s"><path d="M142 32c-2-3-8-3-8 1 0 4 5 6 8 9 3-3 8-5 8-9 0-4-6-4-8-1z" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.1"/></g>
+<g class="sobe-item" style="animation-delay:-1.8s"><path d="M18 40c-2-3-7-3-7 1 0 3 4 5 7 8 3-3 7-5 7-8 0-4-5-4-7-1z" fill="#8752C8" stroke="#1B2A5E" stroke-width="1.1"/></g>
+<g transform="translate(26 112)"><ellipse cx="0" cy="0" rx="6.5" ry="5.5" fill="#E8352E" stroke="#1B2A5E" stroke-width="1.1"/><path d="M0-5.5v11" stroke="#1B2A5E" stroke-width="1.1"/><circle cx="-3" cy="-1" r="1.3" fill="#1B2A5E"/><circle cx="3" cy="1.8" r="1.3" fill="#1B2A5E"/><circle cx="-3" cy="2.6" r="1" fill="#1B2A5E"/><circle cx="0" cy="-6.5" r="3" fill="#1B2A5E"/></g>
+<g transform="translate(132 104)"><path d="M0 4h12l-1.5 11H1.5z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.2"/><path d="M12 7l7-6" stroke="#1B2A5E" stroke-width="3" stroke-linecap="round"/><path d="M12 7l7-6" stroke="#2490D6" stroke-width="1.6" stroke-linecap="round"/></g></svg>`,
+saude:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="66" ry="4.5" fill="#000" opacity=".14"/>
+<path d="M7 118c2 14 30 25 73 25s71-11 73-25z" fill="#A86A3C"/><path d="M7 118c2 14 30 25 73 25s71-11 73-25" fill="none" stroke="#7E4A25" stroke-width="2"/>
+<path d="M20 128q30 9 60 10M100 137q24-3 40-12" stroke="#8C552C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<g fill="#C9905F"><ellipse cx="34" cy="132" rx="4" ry="2.4"/><ellipse cx="118" cy="134" rx="3.4" ry="2"/><ellipse cx="78" cy="139" rx="2.6" ry="1.6"/></g>
+<ellipse cx="80" cy="118" rx="74" ry="14" fill="#56AD3D"/><ellipse cx="80" cy="116" rx="70" ry="11.5" fill="#86CF5B"/><ellipse cx="72" cy="114" rx="52" ry="7" fill="#9EDC72"/>
+<path d="M8 119q3 5 9 4q-1 4 5 5q2-3 7-1M152 119q-3 5-9 4q1 4-5 5q-2-3-7-1" stroke="#3F8F2E" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M18.8 117q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><path d="M136.8 116q0.8 -5.6000000000000005 2.4000000000000004 -7.2q-0.8 4 0.8 7.2q0.8 -6.4 3.2 -8.8q-0.8 5.6000000000000005 0 8.8q1.6 -4.800000000000001 4 -5.6000000000000005q-1.6 3.2 -0.8 5.6000000000000005z" fill="#4E9A36"/><g><circle cx="16.3" cy="116" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="118.2" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="117.4" r="1.7" fill="#F28AB2"/><circle cx="12.1" cy="114.6" r="1.7" fill="#F28AB2"/><circle cx="14.7" cy="113.8" r="1.7" fill="#F28AB2"/><circle cx="14" cy="116" r="1.4" fill="#FFD43B"/></g><g><circle cx="149.3" cy="115" r="1.7" fill="#fff"/><circle cx="147.7" cy="117.2" r="1.7" fill="#fff"/><circle cx="145.1" cy="116.4" r="1.7" fill="#fff"/><circle cx="145.1" cy="113.6" r="1.7" fill="#fff"/><circle cx="147.7" cy="112.8" r="1.7" fill="#fff"/><circle cx="147" cy="115" r="1.4" fill="#FFD43B"/></g><g><circle cx="32" cy="122" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="123.9" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="123.2" r="1.5" fill="#FFE27A"/><circle cx="28.4" cy="120.8" r="1.5" fill="#FFE27A"/><circle cx="30.6" cy="120.1" r="1.5" fill="#FFE27A"/><circle cx="30" cy="122" r="1.2" fill="#FFD43B"/></g>
+<g transform="translate(14 78)"><path d="M2 0h18l-2 34H4z" fill="#BFE6FF" stroke="#1B2A5E" stroke-width="1.4" opacity=".95"/><path d="M4 12h14l-1.4 20H5.4z" fill="#4FB3E8"/><path d="M6 14v14" stroke="#fff" stroke-width="1.6" opacity=".6"/><path d="M14 -10l-4 28" stroke="#EE4F7B" stroke-width="2.6" stroke-linecap="round"/></g>
+<path d="M80 36c-9-9-29-9-38 4-11 16-7 46 9 64 9 10 20 13 29 8 9 5 20 2 29-8 16-18 20-48 9-64-9-13-29-13-38-4z" fill="#E5484D" stroke="#1B2A5E" stroke-width="2"/><path d="M80 36c-2 6-2 70 0 76" stroke="#C7363B" stroke-width="2" fill="none" opacity=".5"/>
+<path d="M54 50c-5 9-5 23 0 32" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".45" fill="none"/><circle cx="58" cy="44" r="3" fill="#fff" opacity=".5"/>
+<path d="M80 36q-2-14 5-22" stroke="#1B2A5E" stroke-width="5.5" fill="none" stroke-linecap="round"/><path d="M80 36q-2-14 5-22" stroke="#8A5A2B" stroke-width="3.5" fill="none" stroke-linecap="round"/><g class="folhas"><path d="M84 22q13-13 27-4-11 14-27 4z" fill="#4DB843" stroke="#1B2A5E" stroke-width="1.4" stroke-linejoin="round"/><path d="M86 21q10-3 22-3" stroke="#2E8B2E" stroke-width="1.2" fill="none"/></g>
+<g><ellipse cx="71.2" cy="67.9" rx="4" ry="4.8" fill="#1B2A5E"/><ellipse cx="88.8" cy="67.9" rx="4" ry="4.8" fill="#1B2A5E"/><circle cx="72.4" cy="66" r="1.6" fill="#fff"/><circle cx="90.1" cy="66" r="1.6" fill="#fff"/><ellipse cx="64.3" cy="75.9" rx="4.6" ry="3.2" fill="#FF6F91" opacity=".55"/><ellipse cx="95.8" cy="75.9" rx="4.6" ry="3.2" fill="#FF6F91" opacity=".55"/><path d="M72.4 75.5q7.6 9.2 15.1 0z" fill="#C2185B" stroke="#1B2A5E" stroke-width="2.3" stroke-linejoin="round"/></g>
+<path d="M44 74q-14 2-16 14" stroke="#1B2A5E" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M44 74q-14 2-16 14" stroke="#E5484D" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="28" cy="89" r="4" fill="#fff" stroke="#1B2A5E" stroke-width="1.3"/>
+<path d="M116 74q12-4 18-16" stroke="#1B2A5E" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M116 74q12-4 18-16" stroke="#E5484D" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="135" cy="57" r="4" fill="#fff" stroke="#1B2A5E" stroke-width="1.3"/>
+<g transform="rotate(20 137 48)"><rect x="134" y="26" width="7" height="36" rx="3.5" fill="#16A3B0" stroke="#1B2A5E" stroke-width="1.3"/><rect x="133" y="16" width="9" height="12" rx="2" fill="#fff" stroke="#1B2A5E" stroke-width="1.3"/><path d="M135 18v8M137.5 18v8M140 18v8" stroke="#7CC8F2" stroke-width="1.2"/></g>
+<path d="M66 112v6h-10q-3 0-3-3t3-3zM94 112v6h10q3 0 3-3t-3-3z" fill="#2490D6" stroke="#1B2A5E" stroke-width="1.3" stroke-linejoin="round"/><path d="M56 118h10M94 118h10" stroke="#fff" stroke-width="1.4"/>
+<g transform="translate(118 108)"><path d="M0 0q-3-11 5-15l10 10q-7 9-15 5z" fill="#F7A823" stroke="#1B2A5E" stroke-width="1.2" stroke-linejoin="round"/><path d="M3 -6l3 2M6 -10l3 2" stroke="#E08A00" stroke-width="1.2"/><path d="M5-15l3-6M9-12l6-3" stroke="#3FA535" stroke-width="2.4" stroke-linecap="round"/></g>
+<g class="sobe-item"><path d="M144 92q-7 10-7 15a7 7 0 0 0 14 0q0-5-7-15z" fill="#4FB3E8" stroke="#1B2A5E" stroke-width="1.2"/><circle cx="141.5" cy="106" r="1.2" fill="#1B2A5E"/><circle cx="146.5" cy="106" r="1.2" fill="#1B2A5E"/><path d="M142 109q2 1.6 4 0" stroke="#1B2A5E" stroke-width="1" fill="none"/></g>
+<path class="brilho" style="animation-delay:0s" d="M146 17l1.4 3.6 3.6 1.4-3.6 1.4-1.4 3.6-1.4-3.6-3.6-1.4 3.6-1.4z" fill="#FFE27A"/><path class="brilho" style="animation-delay:1.2s" d="M22 36l1.1 2.9 2.9 1.1-2.9 1.1-1.1 2.9-1.1-2.9-2.9-1.1 2.9-1.1z" fill="#FFE27A"/></svg>`,
+ciencias:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="76" ry="13" fill="#B97A45"/><ellipse cx="80" cy="141" rx="76" ry="13" fill="#6DBB4A"/><ellipse cx="80" cy="138" rx="68" ry="9" fill="#9BD96F"/>
+<path d="M64 20h32M70 20v34l-34 66a10 10 0 0 0 9 16h70a10 10 0 0 0 9-16L90 54V20" fill="#EAF6FF" stroke="#1B2A5E" stroke-width="4" stroke-linejoin="round"/>
+<path d="M50 92h60l15 30a6 6 0 0 1-5 9H40a6 6 0 0 1-5-9z" fill="#6C5CE7"/>
+<g fill="#A99CF5"><circle class="bolha" cx="70" cy="110" r="6"/><circle class="bolha" style="animation-delay:.7s" cx="88" cy="116" r="4"/><circle class="bolha" style="animation-delay:1.3s" cx="80" cy="104" r="5"/></g>
+<circle cx="66" cy="112" r="2" fill="#fff"/><circle cx="96" cy="108" r="2" fill="#fff"/>
+<g transform="translate(118 30) rotate(30)"><circle r="16" fill="#CDEBFF" stroke="#F7A823" stroke-width="5"/><rect x="-4" y="16" width="8" height="26" rx="4" fill="#F7A823"/></g>
+<g fill="#FFE27A"><path class="brilho" d="M30 40l3 7 7 3-7 3-3 7-3-7-7-3 7-3z"/></g></svg>`,
+artes:`<svg viewBox="0 0 160 150" aria-hidden="true"><ellipse cx="80" cy="146" rx="76" ry="13" fill="#B97A45"/><ellipse cx="80" cy="141" rx="76" ry="13" fill="#6DBB4A"/><ellipse cx="80" cy="138" rx="68" ry="9" fill="#9BD96F"/>
+<path d="M56 136L76 30M104 136L84 30M80 112v24" stroke="#8A5A2B" stroke-width="6" stroke-linecap="round"/>
+<rect x="40" y="18" width="80" height="70" rx="4" fill="#fff" stroke="#8A5A2B" stroke-width="4"/>
+<path d="M50 78a30 30 0 0 1 60 0" stroke="#EE4F7B" stroke-width="6" fill="none"/><path d="M58 78a22 22 0 0 1 44 0" stroke="#F7A823" stroke-width="6" fill="none"/><path d="M66 78a14 14 0 0 1 28 0" stroke="#2490D6" stroke-width="6" fill="none"/>
+<circle cx="104" cy="34" r="8" fill="#FFC531"/>
+<rect x="36" y="86" width="88" height="8" rx="3" fill="#8A5A2B"/>
+<g class="pincel"><g transform="translate(128 60) rotate(30)"><rect x="-3" y="0" width="6" height="40" rx="3" fill="#2490D6"/><path d="M-4 0h8l-4-14z" fill="#EE4F7B"/></g></g>
+<g transform="translate(8 104)"><path d="M0 18c0-18 22-24 36-16 12 7 4 16-4 14-6-1-8 6-2 10 4 4-6 8-14 6C6 30 0 26 0 18z" fill="#F4D6A8"/><circle cx="10" cy="12" r="4" fill="#EE4F7B"/><circle cx="20" cy="8" r="4" fill="#3FA535"/><circle cx="29" cy="12" r="4" fill="#2490D6"/><circle cx="10" cy="22" r="4" fill="#F7A823"/></g></svg>`
+
+};
+const RAB=`<svg viewBox="-16 0 152 160" aria-hidden="true"><g class="asa-e"><g transform="translate(58 66) scale(1.4) translate(-58 -66)"><path d="M58 64C30 28 4 38 16 62C24 76 46 74 58 64z" fill="#CDEFFF" stroke="#7FCBEF" stroke-width="2.5"/><path d="M58 70C36 76 22 98 38 102C50 104 56 88 58 70z" fill="#E6D4FF" stroke="#B394F0" stroke-width="2.5"/><circle cx="30" cy="54" r="3" fill="#fff"/><circle cx="42" cy="90" r="2.4" fill="#fff"/></g></g><g transform="translate(120 0) scale(-1 1)"><g class="asa-d"><g transform="translate(58 66) scale(1.4) translate(-58 -66)"><path d="M58 64C30 28 4 38 16 62C24 76 46 74 58 64z" fill="#CDEFFF" stroke="#7FCBEF" stroke-width="2.5"/><path d="M58 70C36 76 22 98 38 102C50 104 56 88 58 70z" fill="#E6D4FF" stroke="#B394F0" stroke-width="2.5"/><circle cx="30" cy="54" r="3" fill="#fff"/><circle cx="42" cy="90" r="2.4" fill="#fff"/></g></g></g><path d="M34 56Q32 26 60 24Q88 26 86 56Q90 80 80 90L40 90Q30 80 34 56z" fill="#F2B33D"/><g stroke="#FFD9B8" stroke-width="6" stroke-linecap="round"><path d="M54 128v16"/><path d="M66 128v16"/></g><ellipse cx="52" cy="148" rx="7" ry="4.5" fill="#EE4F7B"/><ellipse cx="68" cy="148" rx="7" ry="4.5" fill="#EE4F7B"/><path d="M47 90h26l18 40q-31 9-62 0z" fill="#F28AB2"/><path d="M29 130q31 9 62 0l2 5q-33 10-66 0z" fill="#EE4F7B"/><rect x="47" y="80" width="26" height="16" rx="6" fill="#EE4F7B"/><g fill="#fff"><circle cx="50" cy="112" r="2"/><circle cx="64" cy="104" r="2"/><circle cx="72" cy="120" r="2"/><circle cx="42" cy="124" r="1.8"/><circle cx="58" cy="124" r="1.8"/></g><g fill="none" stroke="#F2C29C" stroke-width="6" stroke-linecap="round"><g class="a-idle"><g class="a-wave"><path d="M49 86q-16-2-21-17"/><path d="M28 69l-6-16" stroke="#8A5A2B" stroke-width="3"/><path d="M22 41l2.6 5.4 6 .8-4.3 4.2 1 5.9-5.3-2.8-5.3 2.8 1-5.9-4.3-4.2 6-.8z" fill="#FFD25A" stroke="#F7A823" stroke-width="1.5"/></g><path d="M71 86q14 6 16 18"/></g><g class="a-up"><path d="M49 84q-18-12-17-32"/><path d="M71 84q18-12 17-32"/><path d="M32 52l-3-12" stroke="#8A5A2B" stroke-width="3"/><path d="M28 28l2.6 5.4 6 .8-4.3 4.2 1 5.9-5.3-2.8-5.3 2.8 1-5.9-4.3-4.2 6-.8z" fill="#FFD25A" stroke="#F7A823" stroke-width="1.5"/></g></g><circle cx="60" cy="56" r="21" fill="#FFD9B8"/><path d="M38 54Q38 30 60 30Q82 30 82 54Q74 40 62 44Q56 36 48 44Q42 46 38 54z" fill="#F7C04A"/><circle cx="60" cy="25" r="8" fill="#F2B33D"/><g><circle cx="46" cy="36" r="3.6" fill="#EE4F7B"/><circle cx="54" cy="32" r="3.6" fill="#FFFFFF"/><circle cx="66" cy="32" r="3.6" fill="#A576E0"/><circle cx="74" cy="36" r="3.6" fill="#EE4F7B"/></g><g class="ey"><circle cx="52" cy="58" r="5" fill="#1F2A44"/><circle cx="68" cy="58" r="5" fill="#1F2A44"/><circle cx="53.6" cy="56.4" r="1.8" fill="#fff"/><circle cx="69.6" cy="56.4" r="1.8" fill="#fff"/></g><g class="ey-joy" fill="none" stroke="#1F2A44" stroke-width="4" stroke-linecap="round"><path d="M47 60q5-7 10 0"/><path d="M63 60q5-7 10 0"/></g><path d="M53 66q7 7 14 0" fill="none" stroke="#C2185B" stroke-width="3.5" stroke-linecap="round"/><circle cx="45" cy="65" r="3.8" fill="#F7A1C0"/><circle cx="75" cy="65" r="3.8" fill="#F7A1C0"/></svg>`;
+
+const mapa=document.getElementById('mapa'),fundo=document.getElementById('fundo'),rab=document.getElementById('rabisco'),balao=document.getElementById('balao');
+const cartao=document.getElementById('cartao'),cTit=document.getElementById('cTit'),cTxt=document.getElementById('cTxt'),cIr=document.getElementById('cIr'),btnSom=document.getElementById('som');
+const calmo=matchMedia('(prefers-reduced-motion: reduce)').matches;
+rab.innerHTML=RAB;
+
+/* som e voz */
+let somLigado=true;try{somLigado=localStorage.getItem('me:som')!=='0'}catch(e){}
+btnSom.setAttribute('aria-pressed',String(somLigado));
+btnSom.onclick=()=>{somLigado=!somLigado;btnSom.setAttribute('aria-pressed',String(somLigado));try{localStorage.setItem('me:som',somLigado?'1':'0')}catch(e){}if(!somLigado&&'speechSynthesis' in window)speechSynthesis.cancel();};
+let ctx=null;
+function plim(notas){if(!somLigado)return;try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();const t0=ctx.currentTime;notas.forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain(),t=t0+i*.09;o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.18,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+.35);o.connect(g).connect(ctx.destination);o.start(t);o.stop(t+.4);});}catch(e){}}
+let voz=null;function acharVoz(){const v=('speechSynthesis' in window)?speechSynthesis.getVoices():[];voz=v.find(x=>/pt-BR/i.test(x.lang))||v.find(x=>/^pt/i.test(x.lang))||null;}
+if('speechSynthesis' in window){acharVoz();speechSynthesis.onvoiceschanged=acharVoz;}
+function falar(t){balao.textContent=t;balao.classList.add('mostra');if(!somLigado||!('speechSynthesis' in window))return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='pt-BR';if(voz)u.voice=voz;u.rate=.95;u.pitch=1.15;speechSynthesis.speak(u);}
+
+/* desenho do cenário */
+function curva(p){let d=`M${p[0][0]} ${p[0][1]}`;for(let i=0;i<p.length-1;i++){const a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;d+=` C${b[0]+(c[0]-a[0])/6} ${b[1]+(c[1]-a[1])/6} ${c[0]-(e[0]-b[0])/6} ${c[1]-(e[1]-b[1])/6} ${c[0]} ${c[1]}`;}return d;}
+function nuvem(x,y,s,dur,atraso){return `<g transform="translate(${x} ${y}) scale(${s})"><g class="nuvem" style="animation-duration:${dur}s;animation-delay:-${atraso}s"><g fill="#fff" opacity=".95"><ellipse cx="0" cy="0" rx="46" ry="18"/><circle cx="-16" cy="-12" r="18"/><circle cx="12" cy="-18" r="22"/></g></g></g>`;}
+function desenhar(L){
+  const {W,H,ceu}=L,alto=W<H;
+  let s=`<defs><linearGradient id="gCeu" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FA8F2"/><stop offset=".55" stop-color="#8FD0FA"/><stop offset="1" stop-color="#E4F6FF"/></linearGradient><radialGradient id="gSol" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#FFF4C2" stop-opacity=".9"/><stop offset="1" stop-color="#FFF4C2" stop-opacity="0"/></radialGradient><linearGradient id="gSerra" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B9C8F2"/><stop offset="1" stop-color="#D9E6FB"/></linearGradient><linearGradient id="gSerra2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9DD8C0"/><stop offset="1" stop-color="#BFE8C9"/></linearGradient><linearGradient id="gChao" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD663"/><stop offset="1" stop-color="#5FB243"/></linearGradient><linearGradient id="gGrama" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A6E07A"/><stop offset="1" stop-color="#7CC653"/></linearGradient><linearGradient id="gMorro" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8FD465"/><stop offset="1" stop-color="#6DBB4A"/></linearGradient></defs>`;
+  s+=`<rect width="${W}" height="${H}" fill="url(#gCeu)"/>`;
+  const ax=alto?W*.5:W*.5,ay=ceu+40,r=Math.min(alto?170:300,ay-14);
+  ['#E8618C','#F2A83B','#F5D24A','#4CAF50','#3A9BDC','#8E63CE'].forEach((c,i)=>{const k=alto?10:14;s+=`<path d="M${ax-r+i*k} ${ay} A${r-i*k} ${r-i*k} 0 0 1 ${ax+r-i*k} ${ay}" stroke="${c}" stroke-width="${k+.5}" fill="none" opacity=".92"/>`;});
+  const sx=alto?W-50:W-80,sy=alto?52:72;
+  s+=`<circle cx="${sx}" cy="${sy}" r="${alto?90:140}" fill="url(#gSol)"/><g transform="translate(${sx} ${sy})"><g class="sol-raios">${Array.from({length:12},(_,i)=>`<rect x="-4" y="-58" width="8" height="16" rx="4" fill="#FFD25A" transform="rotate(${i*30})"/>`).join('')}</g><circle r="34" fill="#FFC531"/><circle cx="-11" cy="-5" r="4" fill="#B5651D"/><circle cx="11" cy="-5" r="4" fill="#B5651D"/><path d="M-12 8q12 12 24 0" stroke="#B5651D" stroke-width="4" fill="none" stroke-linecap="round"/></g>`;
+  s+=nuvem(alto?60:120,alto?60:70,alto?.7:1,60,10)+nuvem(alto?250:520,alto?120:150,alto?.55:.8,75,40)+nuvem(alto?120:820,alto?30:200,alto?.5:.7,90,70);
+  s+=`<g class="passaro" style="animation-delay:-4s"><path d="M0 ${alto?110:150}q8-8 16 0q8-8 16 0" stroke="#1B2A5E" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M30 ${alto?122:166}q6-6 12 0q6-6 12 0" stroke="#1B2A5E" stroke-width="3" fill="none" stroke-linecap="round"/></g>`;
+  s+=`<path d="M0 ${ceu+10} C${W*.06} ${ceu-60} ${W*.14} ${ceu-95} ${W*.2} ${ceu-60} S${W*.3} ${ceu-10} ${W*.36} ${ceu-20} S${W*.5} ${ceu-30} ${W*.6} ${ceu-25} S${W*.74} ${ceu-80} ${W*.84} ${ceu-90} S${W*.96} ${ceu-40} ${W} ${ceu-30} V${ceu+60} H0z" fill="url(#gSerra)"/>`;
+  s+=`<path d="M0 ${ceu+20} C${W*.1} ${ceu-30} ${W*.2} ${ceu-20} ${W*.3} ${ceu+5} S${W*.5} ${ceu-35} ${W*.62} ${ceu-5} S${W*.85} ${ceu-40} ${W} ${ceu} V${ceu+60} H0z" fill="url(#gSerra2)"/>`;
+  s+=`<path d="M0 ${ceu+30} Q${W*.2} ${ceu-50} ${W*.42} ${ceu+20} T${W} ${ceu} V${H} H0z" fill="url(#gMorro)"/>`;
+  s+=`<path d="M0 ${ceu+70} Q${W*.3} ${ceu+10} ${W*.6} ${ceu+60} T${W} ${ceu+40} V${H} H0z" fill="url(#gGrama)"/>`;
+  s+=`<path d="M0 ${H*.62} Q${W*.25} ${H*.52} ${W*.5} ${H*.6} T${W} ${H*.56} V${H} H0z" fill="url(#gChao)" opacity=".55"/>`;
+  for(let k=0;k<(alto?14:22);k++){const x=(k*137)%W,y=ceu+90+((k*71)%(H-ceu-110));s+=`<path d="M${x} ${y}l-4-9M${x} ${y}v-11M${x} ${y}l4-9" stroke="#5FAE3E" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".5"/>`;}
+  const arv=alto?[[30,ceu+40],[370,ceu+70],[60,ceu+10]]:[[250,ceu+20],[440,ceu+30],[600,ceu+40],[760,ceu+20],[960,ceu+10],[40,ceu+40]];
+  arv.forEach(([x,y],k)=>{const r=11+(k%3)*4;s+=`<g transform="translate(${x} ${y})"><ellipse cy="${r}" rx="${r*.9}" ry="3" fill="#3D8B2E" opacity=".25"/><rect x="-2.5" y="0" width="5" height="${r}" rx="2" fill="#7A5230"/><circle cy="-2" r="${r}" fill="${k%2?'#3FA535':'#36963A'}"/><circle cx="${-r*.3}" cy="${-r*.35}" r="${r*.6}" fill="${k%2?'#5CC24F':'#4DB843'}"/><circle cx="${-r*.42}" cy="${-r*.55}" r="${r*.2}" fill="#fff" opacity=".35"/></g>`;});
+  const cam=curva([L.ini,...L.pts]);
+  s+=`<path d="${cam}" stroke="#3D8B2E" stroke-opacity=".18" stroke-width="${alto?46:54}" fill="none" stroke-linecap="round" transform="translate(0 6)"/><path d="${cam}" stroke="#D29A45" stroke-width="${alto?40:46}" fill="none" stroke-linecap="round"/><path d="${cam}" stroke="#F8DFA0" stroke-width="${alto?30:36}" fill="none" stroke-linecap="round"/><path d="${cam}" stroke="#fff" stroke-width="4" fill="none" stroke-dasharray="10 16" stroke-linecap="round" opacity=".8"/>`;
+  const flores=[];for(let k=0;k<(alto?16:12);k++){const x=alto?(k%2?372:28):(40+k*84)%W,y=alto?ceu+120+k*92:(k%2?ceu+200:H-30);flores.push([x,y]);}
+  flores.forEach(([x,y],i)=>{const c=['#EE4F7B','#FFE27A','#fff','#A576E0'][i%4];s+=`<g transform="translate(${x} ${y})"><path d="M0 0v14" stroke="#3D8B2E" stroke-width="3"/>${[0,72,144,216,288].map(a=>`<circle cx="${(Math.cos(a*Math.PI/180)*6).toFixed(1)}" cy="${(Math.sin(a*Math.PI/180)*6).toFixed(1)}" r="5" fill="${c}"/>`).join('')}<circle r="4" fill="#F7A823"/></g>`;});
+  s+=`<g transform="translate(${L.ini[0]} ${L.ini[1]})"><path d="M-26 0v-30l26-22 26 22v30z" fill="#fff"/><path d="M-32 -28l32-28 32 28" stroke="#EE4F7B" stroke-width="9" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="-8" y="-20" width="16" height="20" rx="3" fill="#2490D6"/></g>`;
+  fundo.setAttribute('viewBox',`0 0 ${W} ${H}`);fundo.innerHTML=s;
+}
+
+/* mundos e a fadinha Lumi (o elemento ainda se chama rabisco) */
+let L=null,onde=-1,ocupado=false;
+const botoes=MUNDOS.map((m,i)=>{const b=document.createElement('button');b.type='button';b.className='mundo';b.style.setProperty('--cor',m.cor);
+  b.setAttribute('aria-label',m.titulo+(m.href?'':', em breve'));
+  b.classList.add(m.href?'pronto':'breve');
+  b.innerHTML=ART[m.id]+`<span class="nome">${m.titulo}</span>`+(m.href?'<span class="jogar" aria-hidden="true">▶ Jogar</span>':'<span class="placa"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.5V8l2.5 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Em breve</span>');
+  b.onclick=()=>escolher(i);mapa.appendChild(b);return b;});
+function pos(el,[x,y]){el.style.left=(x/L.W*100)+'%';el.style.top=(y/L.H*100)+'%';}
+function posRab(p){const alto=L.W<L.H,casa=p===L.ini,dx=casa?(alto?-62:4):(alto?-64:-80),dy=casa?(alto?58:-58):(alto?50:56);pos(rab,[p[0]+dx,p[1]+dy]);
+  const bx=Math.min(Math.max(p[0],L.W*.3),L.W*.7);pos(balao,[bx,p[1]-(alto?95:118)]);
+  const fx=p[0]+dx;requestAnimationFrame(()=>{const w=balao.offsetWidth||1,px=(fx-bx)/L.W*mapa.clientWidth;balao.style.setProperty('--cauda',Math.min(Math.max(w/2+px,22),w-22)+'px');});}
+function aplicar(){
+  L=matchMedia('(max-width:680px)').matches?LAYOUT.alto:LAYOUT.largo;
+  mapa.style.setProperty('--ar',`${L.W}/${L.H}`);mapa.style.setProperty('--mw',L.mw);mapa.style.setProperty('--rw',L.rw);
+  desenhar(L);botoes.forEach((b,i)=>pos(b,L.pts[i]));posRab(onde<0?L.ini:L.pts[onde]);
+}
+const espera=ms=>new Promise(r=>setTimeout(r,ms));
+async function andar(ate){
+  rab.classList.remove('feliz');balao.classList.remove('mostra');
+  if(ate===onde)return;rab.classList.add('andando');
+  const passo=ate>onde?1:-1;
+  for(let i=onde+passo;passo>0?i<=ate:i>=ate;i+=passo){posRab(L.pts[i]);if(!calmo)await espera(430);}
+  onde=ate;rab.classList.remove('andando');
+}
+function estrelas(el){if(calmo)return;const r=el.getBoundingClientRect(),m=mapa.getBoundingClientRect();for(let k=0;k<7;k++){const s=document.createElement('span');s.className='estrela-voa';s.textContent=['⭐','✨','🌟'][k%3];s.style.left=(r.left-m.left+r.width*(.15+.7*Math.random()))+'px';s.style.top=(r.top-m.top+r.height*.3)+'px';s.style.setProperty('--dx',((Math.random()-.5)*90)+'px');s.style.animationDelay=(k*.06)+'s';mapa.appendChild(s);setTimeout(()=>s.remove(),1400);}}
+async function escolher(i){
+  if(ocupado)return;ocupado=true;const m=MUNDOS[i];
+  botoes.forEach(b=>b.classList.remove('escolhido'));void botoes[i].offsetWidth;botoes[i].classList.add('escolhido');
+  plim(m.href?[660,880,1320]:[520,440]);
+  await andar(i);
+  rab.classList.toggle('feliz',!!m.href);if(m.href)estrelas(botoes[i]);
+  falar(m.fala);
+  cartao.style.setProperty('--cor',m.cor);document.getElementById('cIco').innerHTML=ART[m.id];cTit.textContent=m.titulo;cTxt.textContent='';cTxt.textContent=m.tema+': '+m.txt+(m.href?'':' Este mundo está sendo construído.');
+  if(m.href){cIr.href=m.href;cIr.removeAttribute('aria-disabled');cIr.textContent='Entrar no mundo ▶';}
+  else{cIr.removeAttribute('href');cIr.setAttribute('aria-disabled','true');cIr.textContent='Em breve';}
+  document.body.classList.add('escolheu');ocupado=false;
+  if(m.href){await espera(calmo?300:1100);plim([880,1320]);location.href=m.href;}   // mundo pronto: já abre
+}
+cIr.addEventListener('click',e=>{if(cIr.getAttribute('aria-disabled')==='true')e.preventDefault();else plim([880,1320]);});
+let ultimo=matchMedia('(max-width:680px)').matches;
+addEventListener('resize',()=>{const a=matchMedia('(max-width:680px)').matches;if(a!==ultimo){ultimo=a;aplicar();}});
+aplicar();
+setTimeout(()=>{if(onde<0&&!matchMedia('(max-width:680px)').matches){balao.textContent='Olá! Eu sou a fadinha Lumi. Toque num mundo!';balao.classList.add('mostra');}},700);
+
+/* ---------- objetivos pedagógicos (BNCC, crianças pequenas) ---------- */
+const OBJ={
+ letras:{campos:['Escuta, fala, pensamento e imaginação','O eu, o outro e o nós'],metas:[['Reconhecer o próprio nome, as letras dele e os nomes dos colegas.',''],['Levantar hipóteses sobre a escrita e escrever do seu jeito.','EI03EF09'],['Ouvir, recontar e brincar com parlendas, contos e cantigas.','EI03EF01']]},
+ numeros:{campos:['Espaços, tempos, quantidades, relações e transformações'],metas:[['Relacionar números às quantidades e reconhecer o antes, o depois e o entre.','EI03ET07'],['Classificar objetos e figuras pelas semelhanças e diferenças.','EI03ET05'],['Comparar tamanhos, alturas e pesos no dia a dia.','EI03ET08']]},
+ bau:{campos:['O eu, o outro e o nós','Traços, sons, cores e formas'],metas:[['Mostrar interesse e respeito por diferentes culturas e modos de vida.','EI03EO06'],['Usar sons, músicas e instrumentos em festas e brincadeiras.','EI03TS01'],['Conhecer brinquedos, comidas e festas tradicionais do Brasil.','']]},
+ ambiente:{campos:['Espaços, tempos, quantidades, relações e transformações','O eu, o outro e o nós'],metas:[['Buscar informações sobre a natureza e sobre como cuidar dela.','EI03ET03'],['Observar mudanças nas plantas, na água e nos materiais.','EI03ET02'],['Criar hábitos de cuidado: economizar água e separar o lixo.','']]},
+ emocoes:{campos:['O eu, o outro e o nós'],metas:[['Comunicar ideias e sentimentos a pessoas e grupos.','EI03EO04'],['Usar o respeito para resolver conflitos.','EI03EO07'],['Reconhecer alegria, medo, raiva e tristeza em si e nos outros.','']]},
+ saude:{campos:['Corpo, gestos e movimentos'],metas:[['Adotar hábitos de higiene, alimentação e cuidado com o corpo.','EI03CG04'],['Controlar o corpo em brincadeiras, jogos e danças.','EI03CG02'],['Entender a importância do sono, da água e do movimento.','']]},
+};
+const objs=document.getElementById('objs');
+objs.innerHTML=MUNDOS.map(m=>{const o=OBJ[m.id];return `<article class="obj" style="--cor:${m.cor}"><p class="tema">${m.tema}</p><h3>${m.titulo}</h3><ul class="campos" aria-label="Campos de experiência">${o.campos.map(c=>`<li>${c}</li>`).join('')}</ul><ul class="metas">${o.metas.map(([t,c])=>`<li>${t}${c?` <span class="cod">${c}</span>`:''}</li>`).join('')}</ul></article>`}).join('');
+
+/* ---------- loja e carrinho ---------- */
+// Preços. Promoção de lançamento: vale até o fim de PROMO.ate (horário de Brasília) e depois volta sozinha ao preço cheio.
+// Ao mudar, mude também servidor/functions/regras.js.
+const PRECO_CHEIO=19.90, PROMO={preco:9.95,ate:new Date('2026-10-31T23:59:59-03:00'),txt:'31/10'};
+const EM_PROMO=Date.now()<=PROMO.ate.getTime();
+const PRECO=EM_PROMO?PROMO.preco:PRECO_CHEIO, PRECO_COLECAO=89.90;
+// Pix estático (padrão BR Code do Banco Central): o valor vai junto no código.
+const PIX={chave:'mundo.encantado.prof@gmail.com',nome:'SANDRA MEDINA BENINI',cidade:'TUPA'};
+function crc16(t){let c=0xFFFF;for(let i=0;i<t.length;i++){c^=t.charCodeAt(i)<<8;for(let b=0;b<8;b++)c=c&0x8000?(c<<1)^0x1021:c<<1;c&=0xFFFF;}return c.toString(16).toUpperCase().padStart(4,'0');}
+function campo(id,v){return id+String(v.length).padStart(2,'0')+v;}
+function codigoPix(valor,txid){
+  const conta=campo('00','br.gov.bcb.pix')+campo('01',PIX.chave);
+  const s=campo('00','01')+campo('26',conta)+campo('52','0000')+campo('53','986')+campo('54',valor.toFixed(2))+campo('58','BR')+campo('59',PIX.nome)+campo('60',PIX.cidade)+campo('62',campo('05',txid||'***'))+'6304';
+  return s+crc16(s);
+}
+let totalAtual=0,listaAtual='',pedidoAtual=null;
+// Para onde vai o cadastro do pedido. Vazio = só e-mail. Depois de criar a planilha
+// (planilha-pedidos.gs), cole aqui o endereço do app da web do Google Apps Script.
+const PLANILHA_URL='';
+function novoCodigo(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=crypto.getRandomValues(new Uint8Array(6));r.forEach(x=>s+=c[x%c.length]);return 'ME'+s;}
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+let carrinho=[];try{carrinho=JSON.parse(localStorage.getItem('me:carrinho')||'[]')}catch(e){}
+const aVenda=id=>!!(MUNDOS.find(m=>m.id===id)||{}).href;   // só mundos prontos podem ser comprados
+if(!Array.isArray(carrinho))carrinho=[];carrinho=carrinho.filter(aVenda);
+const vitEl=document.getElementById('vitrine'),prodEl=document.getElementById('produtos'),comboEl=document.getElementById('combo'),gaveta=document.getElementById('gaveta');
+function salvar(){try{localStorage.setItem('me:carrinho',JSON.stringify(carrinho))}catch(e){}}
+function temColecao(){return carrinho.includes('colecao');}
+function noCarrinho(id){return carrinho.includes(id)||temColecao();}
+function alternar(id){
+  if(!aVenda(id))return;
+  if(id==='colecao'){carrinho=temColecao()?[]:['colecao'];}
+  else if(temColecao()){return;}
+  else{carrinho=carrinho.includes(id)?carrinho.filter(x=>x!==id):[...carrinho,id];if(carrinho.length===MUNDOS.length)carrinho=['colecao'];}
+  plim([660,990]);salvar();desenharLoja();
+}
+function desenharLoja(){
+  const cheio=MUNDOS.length*PRECO;
+  comboEl.innerHTML=`<span class="cb-ic" aria-hidden="true">🎁</span><div class="txt"><b>Coleção completa: os 6 mundos</b><span>Quando todos os mundos estiverem prontos, você poderá levar a coleção inteira com preço especial.</span></div><span class="breve">Em breve</span>`;
+  const RELOGIO='<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4.5V8l2.5 1.6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+  const L=MUNDOS.find(m=>m.href),no=noCarrinho(L.id),COR6=['var(--rosa)','var(--laranja)','var(--verde)','var(--azul)','var(--roxo)','var(--turquesa)'];
+  vitEl.innerHTML=`<div class="vt-palco" aria-hidden="true"><span class="vt-arco"></span><span class="vt-sol"></span><span class="vt-nuv"></span><div class="vt-art">${ART[L.id]}</div><div class="vt-letras">${[...'LETRAS'].map((c,k)=>`<i style="--lc:${COR6[k]};--d:${k*.12}s">${c}</i>`).join('')}</div></div>
+<div class="vt-info"><span class="vt-tag">${L.tema} · 4 e 5 anos</span><h3>${L.titulo}</h3>
+<ul class="vt-lista"><li><b>10 trilhas</b> e 156 brincadeiras com o nome, a família, os bichos, as parlendas, os contos e as cantigas</li><li><b>Experimente grátis:</b> a Trilha do Meu Nome inteira e 3 brincadeiras de cada trilha</li><li><b>Alinhado à BNCC</b>, com orientações para famílias e professores</li><li><b>Compra única</b>, sem assinatura e sem anúncios</li></ul>
+<div class="vt-compra"><div class="vt-preco">${EM_PROMO?`<span class="vt-off">50% de desconto até ${PROMO.txt}</span><s>${brl(PRECO_CHEIO)}</s>`:''}<strong>${brl(PRECO)}</strong><small>pagamento único</small></div>
+<div class="vt-bts">${no?`<button type="button" class="vt-ir" data-ir>✓ No carrinho · Ir para o carrinho ➜</button><button type="button" class="vt-tirar" data-id="${L.id}">Tirar do carrinho</button>`:`<button type="button" class="vt-add" data-id="${L.id}" data-add>Adicionar ao carrinho</button><a class="vt-teste" href="${L.href}">Experimentar grátis</a>`}</div></div></div>`;
+  vitEl.classList.toggle('no',no);
+  prodEl.innerHTML=MUNDOS.filter(m=>!m.href).map(m=>`<li class="prod breve-p" style="--cor:${m.cor}"><div class="palco-p">${ART[m.id]}</div><div class="pi"><span class="tema">${m.tema}</span><h4>${m.titulo}</h4><span class="breve">${RELOGIO}Em breve</span></div></li>`).join('');
+  vitEl.querySelectorAll('button[data-id]').forEach(b=>b.onclick=()=>{alternar(b.dataset.id);if(b.hasAttribute('data-add'))abrirGaveta();});
+  vitEl.querySelectorAll('button[data-ir]').forEach(b=>b.onclick=abrirGaveta);
+  // carrinho
+  const itens=document.getElementById('itens'),q=document.getElementById('qtd');
+  const n=temColecao()?MUNDOS.length:carrinho.length;
+  q.textContent=n;n?q.removeAttribute('data-zero'):q.setAttribute('data-zero','');
+  const fq=document.getElementById('flutQtd');if(fq){fq.textContent=n;document.getElementById('carrinhoFlut').classList.toggle('tem',n>0);}
+  if(!carrinho.length)itens.innerHTML='<li class="vazio">Seu carrinho está vazio. Escolha um mundo na loja.</li>';
+  else if(temColecao())itens.innerHTML=`<li style="--cor:#8752C8"><span class="bola"></span><span class="nm">Coleção completa<small>6 mundos</small></span><span>${brl(PRECO_COLECAO)}</span><button type="button" data-rm="colecao">Tirar</button></li>`;
+  else itens.innerHTML=carrinho.map(id=>{const m=MUNDOS.find(x=>x.id===id);return `<li style="--cor:${m.cor}"><span class="bola"></span><span class="nm">${m.titulo}<small>${m.href?'Disponível':'Pré-venda'}</small></span><span>${brl(PRECO)}</span><button type="button" data-rm="${id}">Tirar</button></li>`}).join('');
+  itens.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>alternar(b.dataset.rm));
+  const sub=temColecao()?cheio:carrinho.length*PRECO, tot=temColecao()?PRECO_COLECAO:sub;
+  document.getElementById('sub').textContent=brl(sub);
+  const ld=document.getElementById('linhaDesc');ld.hidden=!temColecao();document.getElementById('desc').textContent='− '+brl(cheio-PRECO_COLECAO);
+  document.getElementById('tot').textContent=brl(tot);
+  const dica=document.getElementById('dica');
+  if(!temColecao()&&carrinho.length>=4){const falta=PRECO_COLECAO-sub;dica.hidden=false;dica.innerHTML=(falta<=0?`Com a coleção completa você leva os 6 mundos pagando menos que estes ${carrinho.length}.`:`Por mais ${brl(falta)} você leva os 6 mundos.`)+`<br><button type="button" id="trocar">Trocar pela coleção completa</button>`;document.getElementById('trocar').onclick=()=>alternar('colecao');}
+  else dica.hidden=true;
+  const fim=document.getElementById('finalizar');
+  totalAtual=tot;listaAtual=temColecao()?'Coleção completa (6 mundos)':carrinho.map(id=>MUNDOS.find(x=>x.id===id).titulo).join(', ');
+  if(carrinho.length)fim.removeAttribute('aria-disabled');else fim.setAttribute('aria-disabled','true');
+  // mudou o carrinho: o pedido antigo não vale mais; a pessoa toca em Pagar de novo (o cadastro já vem preenchido)
+  if(pedidoAtual||!document.getElementById('cadastro').hidden){pedidoAtual=null;esconderPix();}
+}
+let antesGaveta=null;
+function abrirGaveta(){antesGaveta=document.activeElement;gaveta.hidden=false;document.body.style.overflow='hidden';gaveta.querySelector('.x').focus();}
+function fecharGaveta(){gaveta.hidden=true;document.body.style.overflow='';antesGaveta&&antesGaveta.focus();}
+document.getElementById('abrirCarrinho').onclick=abrirGaveta;
+document.getElementById('carrinhoFlut').onclick=abrirGaveta;
+// carrinho flutuante: aparece quando o topo (com o carrinho) sai da tela
+if('IntersectionObserver' in window)new IntersectionObserver(([e])=>document.getElementById('carrinhoFlut').classList.toggle('longe',!e.isIntersecting)).observe(document.querySelector('.topo-site'));
+gaveta.querySelectorAll('[data-fechar]').forEach(b=>b.onclick=fecharGaveta);
+addEventListener('keydown',e=>{if(e.key==='Escape'&&!gaveta.hidden)fecharGaveta();});
+function lerCadastro(){try{return JSON.parse(localStorage.getItem('me:cadastro')||'null')}catch(e){return null}}
+function abrirCadastro(){
+  const f=document.getElementById('cadastro'),d=lerCadastro();
+  if(d)['nome','email','tel','cidade','uf','perfil'].forEach(k=>{if(d[k]&&!f.elements[k].value)f.elements[k].value=d[k];});
+  f.hidden=false;document.getElementById('finalizar').setAttribute('aria-expanded','true');
+  f.scrollIntoView({behavior:'smooth',block:'start'});f.elements.nome.focus({preventScroll:true});
+}
+document.getElementById('cadastro').addEventListener('submit',async e=>{
+  e.preventDefault();const f=e.currentTarget,err=document.getElementById('cadErro');
+  const d={};['nome','email','tel','cidade','uf','perfil'].forEach(k=>d[k]=f.elements[k].value.trim());d.uf=d.uf.toUpperCase();
+  let msg='';
+  if(!d.nome||d.nome.length<3)msg='Escreva o nome do responsável.';
+  else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email))msg='Confira o e-mail.';
+  else if(d.tel.replace(/\D/g,'').length<10)msg='Escreva o telefone com DDD.';
+  else if(!d.cidade||d.uf.length!==2)msg='Escreva a cidade e a UF.';
+  else if(!d.perfil)msg='Escolha quem está comprando.';
+  else if(!f.elements.aceite.checked)msg='Marque que concorda com o uso dos dados.';
+  if(msg){err.textContent=msg;err.hidden=false;return;}
+  err.hidden=true;try{localStorage.setItem('me:cadastro',JSON.stringify(d))}catch(_){}
+  const enviar=f.querySelector('button[type=submit]'),CFG=window.ME_CONFIG||{};
+  // Mercado Pago ligado: o servidor confere os preços, cria o pedido e devolve o link de pagamento
+  if(CFG.funcoes){
+    enviar.disabled=true;enviar.textContent='Abrindo o Mercado Pago...';
+    try{
+      const r=await fetch(CFG.funcoes.replace(/\/$/,'')+'/criarPagamento',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({itens:carrinho.slice(),cadastro:d})});
+      const j=await r.json();if(!r.ok||!j.url)throw new Error(j.erro||'sem link');
+      location.href=j.url;return;
+    }catch(x){err.textContent='Não conseguimos abrir o Mercado Pago agora. Você pode pagar pelo Pix abaixo.';err.hidden=false;}
+    finally{enviar.disabled=false;enviar.textContent='Continuar para o pagamento';}
+  }
+  pedidoAtual=Object.assign({codigo:novoCodigo(),data:new Date().toISOString(),itens:carrinho.slice(),itensTexto:listaAtual,total:+totalAtual.toFixed(2)},d);
+  if(window.MEBanco)window.MEBanco.then(b=>b&&b.criarPedidoPix(pedidoAtual)).catch(x=>console.warn('pedido não gravado',x));
+  if(PLANILHA_URL)fetch(PLANILHA_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({},pedidoAtual,{itens:listaAtual}))}).catch(()=>{});
+  f.hidden=true;mostrarPix();document.getElementById('pix').scrollIntoView({behavior:'smooth',block:'start'});
+});
+function mostrarPix(){
+  if(!pedidoAtual)return abrirCadastro();
+  const cod=codigoPix(totalAtual,pedidoAtual.codigo),qr=qrcode(0,'M');qr.addData(cod);qr.make();
+  document.getElementById('pixQr').innerHTML=qr.createSvgTag({cellSize:6,margin:2,scalable:true});
+  document.getElementById('pixCodigo').value=cod;
+  document.getElementById('pixValor').textContent=brl(totalAtual);
+  document.getElementById('pixPedido').href='mailto:mundo.encantado.prof@gmail.com?subject='+encodeURIComponent('Pedido '+pedidoAtual.codigo+' - Mundo Encantado')+'&body='+encodeURIComponent('Olá! Fiz o Pix do pedido '+pedidoAtual.codigo+'.\nValor: '+brl(totalAtual)+'\nMundos: '+listaAtual+'\n\nNome: '+pedidoAtual.nome+'\nE-mail: '+pedidoAtual.email+'\nTelefone: '+pedidoAtual.tel+'\nCidade: '+pedidoAtual.cidade+'/'+pedidoAtual.uf+'\nPerfil: '+pedidoAtual.perfil+'\n\nSegue o comprovante em anexo.');
+  document.getElementById('pixPedidoCod').textContent=pedidoAtual.codigo;
+  document.getElementById('pix').hidden=false;document.getElementById('finalizar').setAttribute('aria-expanded','true');
+}
+function esconderPix(){document.getElementById('pix').hidden=true;document.getElementById('cadastro').hidden=true;document.getElementById('finalizar').setAttribute('aria-expanded','false');}
+document.getElementById('finalizar').addEventListener('click',e=>{if(e.currentTarget.getAttribute('aria-disabled')==='true')return;pedidoAtual=null;document.getElementById('pix').hidden=true;abrirCadastro();});
+document.getElementById('pixCopiar').addEventListener('click',async e=>{
+  const b=e.currentTarget,t=document.getElementById('pixCodigo');
+  try{await navigator.clipboard.writeText(t.value);}catch(_){t.select();document.execCommand('copy');}
+  b.textContent='Código copiado!';setTimeout(()=>b.textContent='Copiar código Pix',2200);
+});
+desenharLoja();
+if((window.ME_CONFIG||{}).funcoes){document.getElementById('finalizar').textContent='Finalizar compra';document.querySelector('#cadastro button[type=submit]').textContent='Continuar para o pagamento';}
+// volta do Mercado Pago: ?pagamento=sucesso|pendente|falha&pedido=MEXXXXXX
+(()=>{const q=new URLSearchParams(location.search),st=q.get('pagamento');if(!st)return;
+  const cod=(q.get('pedido')||'').replace(/[^A-Z0-9]/g,'');
+  const T={sucesso:['Pagamento aprovado!','Obrigada! O pedido '+cod+' foi pago. Em instantes o acesso aos mundos fica liberado para o e-mail do cadastro.'],
+    pendente:['Pagamento em análise','O pedido '+cod+' fica liberado assim que o Mercado Pago confirmar o pagamento.'],
+    falha:['O pagamento não foi concluído','Nada foi cobrado. Você pode tentar de novo pelo carrinho.']}[st];
+  if(!T)return;if(st==='sucesso'){carrinho=[];salvar();desenharLoja();}
+  const d=document.createElement('div');d.className='retorno '+st;d.setAttribute('role','status');
+  d.innerHTML='<b></b><span></span><button type="button" aria-label="Fechar">✕</button>';d.querySelector('b').textContent=T[0];d.querySelector('span').textContent=T[1];
+  d.querySelector('button').onclick=()=>d.remove();document.body.prepend(d);
+  history.replaceState(null,'',location.pathname+location.hash);})();
+
+/* ---------- abas de orientação ---------- */
+const abas=[...document.querySelectorAll('.abas [role=tab]')];
+function abrirAba(t){abas.forEach(a=>{const on=a===t;a.setAttribute('aria-selected',on);a.tabIndex=on?0:-1;document.getElementById(a.getAttribute('aria-controls')).hidden=!on;});}
+abas.forEach((a,i)=>{a.onclick=()=>abrirAba(a);a.onkeydown=e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){const n=abas[(i+(e.key==='ArrowRight'?1:abas.length-1))%abas.length];abrirAba(n);n.focus();}};});
+})();
+</script>
+</body>
+</html>
