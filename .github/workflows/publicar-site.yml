@@ -1,12 +1,14 @@
 # Publica o site no GitHub Pages (mundoencantadoeduca.com.br) a cada mudança na main.
-# A pasta do app (app-alfabetizando/) não vai para o site.
+# As pastas dos apps (app-alfabetizando/ e app-alfabetizando-iphone/) não vão para o site.
 name: Publicar o site
 on:
   push:
     branches: [main]
     paths-ignore:
       - "app-alfabetizando/**"
+      - "app-alfabetizando-iphone/**"
       - ".github/workflows/app-android.yml"
+      - ".github/workflows/app-ios.yml"
   workflow_dispatch:
 permissions:
   contents: read
@@ -26,7 +28,7 @@ jobs:
       - name: Separar os arquivos do site
         run: |
           mkdir _site
-          git ls-files | grep -vE '^(\.github/|app-alfabetizando/|LEIA-ME\.md)' | while read -r f; do
+          git ls-files | grep -vE '^(\.github/|app-alfabetizando/|app-alfabetizando-iphone/|LEIA-ME\.md)' | while read -r f; do
             mkdir -p "_site/$(dirname "$f")"; cp "$f" "_site/$f"
           done
       - uses: actions/upload-pages-artifact@v3

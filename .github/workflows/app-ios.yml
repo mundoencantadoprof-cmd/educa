@@ -1,0 +1,76 @@
+# Gera o app do Alfabetizando para iPhone (App Store).
+# - A cada mudança na pasta app-alfabetizando-iphone/: só confere se o app para iPhone compila.
+# - Ao clicar em "Run workflow" (Actions > App iPhone > Run workflow): gera a
+#   versão assinada e envia para o App Store Connect (aparece no TestFlight).
+#   Precisa dos segredos do repositório: APPLE_TEAM_ID, ASC_KEY_ID,
+#   ASC_ISSUER_ID e ASC_KEY_P8 (conteúdo do arquivo .p8 da chave de API).
+name: App iPhone
+
+on:
+  push:
+    paths:
+      - 'app-alfabetizando-iphone/**'
+      - '.github/workflows/app-ios.yml'
+  workflow_dispatch:
+
+jobs:
+  ios:
+    runs-on: macos-26
+    defaults:
+      run:
+        working-directory: app-alfabetizando-iphone
+    env:
+      ENVIAR: ${{ github.event_name == 'workflow_dispatch' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - run: npm run sync
+
+      - name: Conferir se compila (sem assinatura)
+        if: env.ENVIAR != 'true'
+        working-directory: app-alfabetizando-iphone/ios/App
+        run: |
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -n 40
+          exit ${PIPESTATUS[0]}
+
+      - name: Gerar e enviar para o App Store Connect
+        if: env.ENVIAR == 'true'
+        working-directory: app-alfabetizando-iphone/ios/App
+        env:
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            if [ -z "${!v}" ]; then echo "::error::Falta o segredo $v (Settings > Secrets and variables > Actions)."; exit 1; fi
+          done
+          CHAVE="$RUNNER_TEMP/AuthKey_$ASC_KEY_ID.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$CHAVE"
+          AUTH=(-allowProvisioningUpdates
+                -authenticationKeyPath "$CHAVE"
+                -authenticationKeyID "$ASC_KEY_ID"
+                -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          # Cada envio precisa de um número de compilação novo.
+          xcodebuild -workspace App.xcworkspace -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Alfabetizando.xcarchive" \
+            DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION="${{ github.run_number }}" \
+            "${AUTH[@]}" archive | tail -n 40
+          test "${PIPESTATUS[0]}" -eq 0
+          sed "s/<dict>/<dict><key>teamID<\/key><string>$APPLE_TEAM_ID<\/string>/" ExportOptions.plist > "$RUNNER_TEMP/ExportOptions.plist"
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Alfabetizando.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/saida" \
+            "${AUTH[@]}"
+          rm -f "$CHAVE"
