@@ -1,6 +1,6 @@
-# Alfabetizando: app Android
+# Alfabetizando: app Android e iPhone
 
-App para a Google Play feito a partir do "Brincando com as Letras"
+App para a Google Play e a App Store feito a partir do "Brincando com as Letras"
 (repositório `editoraanap-tupa/letras`), com as 10 trilhas completas.
 
 ## Como funciona o bloqueio
@@ -21,6 +21,7 @@ App para a Google Play feito a partir do "Brincando com as Letras"
 | `scripts/textos-app.mjs` | Textos ajustados só no app (o conteúdo deixa de ser de acesso livre). |
 | `scripts/montar-www.mjs` | Gera `www/` com as páginas + o bloqueio. |
 | `android/` | Projeto Android (Capacitor), aberto no Android Studio. |
+| `ios/` | Projeto iPhone/iPad (Capacitor), aberto no Xcode. |
 
 Os textos que falavam de acesso livre são trocados no app por `scripts/textos-app.mjs`
 (por exemplo: "Sem cadastro..." na página inicial e "Como a trilha avança" nas trilhas).
@@ -53,3 +54,38 @@ Guarde bem a chave de assinatura: sem ela não dá para publicar atualizações.
    Se o preço mudar, troque também `PRECO_PADRAO` no `web/premium.js`.
 5. Preencher o público-alvo (crianças), a política de privacidade e a classificação de conteúdo.
 6. Adicionar seu e-mail como "testador de licença" para testar a compra sem pagar.
+
+## App para iPhone (App Store)
+
+O mesmo app, com as mesmas regras e a mesma compra única `trilhas_completas`.
+No iPhone, o texto da compra fala em "conta Apple" e "App Store" em vez de Google.
+
+Não precisa de Mac: o GitHub monta o app num Mac dele (`.github/workflows/app-ios.yml`).
+
+- A cada mudança na pasta do app, ele só confere se o app para iPhone compila.
+- Em **Actions > App iPhone > Run workflow**, ele monta a versão assinada e envia
+  para o App Store Connect, onde ela aparece no TestFlight.
+
+### O que fazer no lado da Apple
+
+1. Entrar no **Programa de Desenvolvedores da Apple** (US$ 99 por ano) em developer.apple.com.
+2. Em **Certificates, Identifiers & Profiles > Identifiers**, criar o App ID
+   `br.org.educaanap.alfabetizando` (o mesmo nome do Android).
+3. No **App Store Connect**, criar o app "Alfabetizando" com esse App ID, idioma português (Brasil).
+4. Em **Contratos, impostos e dados bancários**, aceitar o contrato de **apps pagos**
+   (sem ele a compra não aparece).
+5. No app, em **Compras dentro do app**, criar o produto **Não consumível** com ID
+   `trilhas_completas`, preço R$ 19,90.
+6. Em **Usuários e acesso > Integrações > Chaves da API do App Store Connect**, criar uma chave
+   com acesso **Admin** e baixar o arquivo `.p8` (só dá para baixar uma vez).
+7. No GitHub, em **Settings > Secrets and variables > Actions**, criar 4 segredos:
+   - `APPLE_TEAM_ID`: o Team ID (em developer.apple.com > Membership).
+   - `ASC_KEY_ID`: o Key ID da chave.
+   - `ASC_ISSUER_ID`: o Issuer ID (aparece no topo da página das chaves).
+   - `ASC_KEY_P8`: o conteúdo inteiro do arquivo `.p8` (abrir no Bloco de Notas e copiar).
+8. Rodar **Actions > App iPhone > Run workflow**. Depois de alguns minutos a versão aparece
+   no TestFlight para testar num iPhone; dali, é só enviar para revisão da Apple.
+9. Na ficha da loja: categoria **Educação**, faixa **Crianças até 5 anos**, link da política de privacidade
+   e capturas de tela de iPhone (6,9") e iPad (13").
+
+Para testar a compra sem pagar, use uma conta de teste "Sandbox" (App Store Connect > Usuários e acesso > Sandbox).
