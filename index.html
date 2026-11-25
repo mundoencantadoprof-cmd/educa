@@ -3,8 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Coleção Mundo Encantado</title>
-<meta name="description" content="Seis mundos de brincadeiras para crianças de 4 e 5 anos: letras, números, cultura, natureza, emoções e saúde.">
+<title>Coleção Mundo Encantado · Brincadeiras para 4 e 5 anos alinhadas à BNCC</title>
+<meta name="description" content="Seis mundos de brincadeiras digitais para crianças de 4 e 5 anos: letras, números, cultura, natureza, emoções e saúde. Alinhada à BNCC, sem anúncios e sem dados da criança.">
+<link rel="canonical" href="https://mundoencantadoeduca.com.br/">
+<link rel="icon" href="logo-mundo-encantado.webp" type="image/webp">
+<link rel="apple-touch-icon" href="logo-mundo-encantado.webp">
+<meta name="theme-color" content="#16A3B0">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Coleção Mundo Encantado">
+<meta property="og:title" content="Coleção Mundo Encantado">
+<meta property="og:description" content="Brincadeiras digitais para crianças de 4 e 5 anos, alinhadas à BNCC. Experimente grátis.">
+<meta property="og:url" content="https://mundoencantadoeduca.com.br/">
+<meta property="og:image" content="https://mundoencantadoeduca.com.br/logo-mundo-encantado.webp">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Coleção Mundo Encantado","legalName":"EDUCA WL LTDA","taxID":"70.294.051/0001-59","url":"https://mundoencantadoeduca.com.br/","logo":"https://mundoencantadoeduca.com.br/logo-mundo-encantado.webp","email":"mundo.encantado.prof@gmail.com","address":{"@type":"PostalAddress","streetAddress":"Rua Bolívia, 88, Jardim América","addressLocality":"Tupã","addressRegion":"SP","postalCode":"17605-310","addressCountry":"BR"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&family=Pacifico&display=swap">
@@ -158,8 +170,12 @@ h2.sec{font-family:var(--display);font-size:clamp(26px,3.4vw,36px);line-height:1
 .rd-s{font-weight:800;color:var(--azul);margin-bottom:4px!important}
 .rodape b{color:var(--ink)}.rodape .rd-txt a{color:var(--ink);text-underline-offset:3px}
 .rd-links{display:flex;flex-wrap:wrap;gap:10px;padding:14px 26px 20px}
+.rd-legal{padding:14px 26px 16px;border-top:2px dashed var(--line);font-size:14px}
+.rd-legal nav{display:flex;flex-wrap:wrap;gap:6px 22px;margin-bottom:6px;font-weight:800}
+.rd-legal nav a{color:var(--ink);text-underline-offset:3px}
+.rd-legal p{margin:0;line-height:1.55}
 .rd-bar{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;padding:12px 26px;background:color-mix(in srgb,var(--turquesa) 12%,var(--surface));font-size:13.5px;font-weight:700}
-@media(max-width:760px){.rodape{margin:24px 12px}.rd-main{flex-direction:column;text-align:center;padding:20px 16px 4px}.rd-txt{text-align:center}.rd-links{justify-content:center;padding:12px 12px 18px}.rd-bar{justify-content:center;text-align:center}}
+@media(max-width:760px){.rodape{margin:24px 12px}.rd-main{flex-direction:column;text-align:center;padding:20px 16px 4px}.rd-txt{text-align:center}.rd-links{justify-content:center;padding:12px 12px 18px}.rd-legal{text-align:center;padding:14px 16px}.rd-legal nav{justify-content:center}.rd-bar{justify-content:center;text-align:center}}
 
 
 /* menu, carrinho e seções novas */
@@ -467,7 +483,7 @@ button.ir.fim{border:0;cursor:pointer;font:inherit;font-weight:900}
       <label>WhatsApp ou telefone<input name="tel" type="tel" autocomplete="tel" inputmode="tel" required></label>
       <div class="duas"><label>Cidade<input name="cidade" autocomplete="address-level2" required></label><label>UF<input name="uf" maxlength="2" autocomplete="address-level1" required></label></div>
       <label>Quem está comprando<select name="perfil" required><option value="">Escolha</option><option>Família</option><option>Professor(a)</option><option>Escola</option></select></label>
-      <label class="aceite"><input type="checkbox" name="aceite" required>Concordo com o uso destes dados para o pedido e o acesso aos mundos. Não pedimos dados da criança.</label>
+      <label class="aceite"><input type="checkbox" name="aceite" required><span>Li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de uso e de compra</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de privacidade</a>. Não pedimos dados da criança.</span></label>
       <p class="erro" id="cadErro" role="alert" hidden></p>
       <button type="submit" class="ir">Continuar para o Pix</button>
     </form>
@@ -486,7 +502,7 @@ button.ir.fim{border:0;cursor:pointer;font:inherit;font-weight:900}
       <p class="chave">Chave Pix (e-mail): mundo.encantado.prof@gmail.com</p>
       <a class="ir" id="pixPedido">Enviar pedido e comprovante</a>
     </section>
-    <p class="nota-pg">Recebido o Pix, enviamos o acesso aos mundos pelo e-mail do pedido. </p>
+    <p class="nota-pg">Recebido o Pix, liberamos o acesso em até 2 dias úteis e avisamos pelo e-mail do pedido. Você tem 7 dias para desistir da compra com reembolso integral. Venda feita por EDUCA WL LTDA, CNPJ 70.294.051/0001-59.</p>
   </aside>
 </div>
 
@@ -508,9 +524,13 @@ button.ir.fim{border:0;cursor:pointer;font:inherit;font-weight:900}
     <a class="tchip" style="--tc:var(--verde)" href="#objetivos"><span class="tci" aria-hidden="true">🎯</span>Objetivos</a>
     <a class="tchip" style="--tc:var(--roxo)" href="#redes"><span class="tci" aria-hidden="true">🏫</span>Prefeituras</a>
     <a class="tchip" style="--tc:var(--laranja)" href="#loja"><span class="tci" aria-hidden="true">🛍️</span>Loja</a>
-    <a class="tchip" style="--tc:var(--turquesa)" href="privacidade-alfabetizando.html"><span class="tci" aria-hidden="true">🔒</span>Privacidade</a>
+    <a class="tchip" style="--tc:var(--turquesa)" href="sobre.html"><span class="tci" aria-hidden="true">💬</span>Quem somos</a>
  </nav>
- <div class="rd-bar"><span>6 mundos para aprender brincando</span><span>© 2026 Coleção Mundo Encantado</span></div>
+ <div class="rd-legal">
+  <nav aria-label="Documentos"><a href="termos.html">Termos de uso e de compra</a><a href="privacidade.html">Política de privacidade</a><a href="privacidade-alfabetizando.html">Privacidade do app Alfabetizando</a><a href="sobre.html">Quem somos e contato</a></nav>
+  <p><b>EDUCA WL LTDA</b> · CNPJ 70.294.051/0001-59 · Rua Bolívia, 88, Jardim América, Tupã-SP, CEP 17605-310</p>
+ </div>
+ <div class="rd-bar"><span>6 mundos para aprender brincando</span><span>© 2026 EDUCA WL LTDA. Todos os direitos reservados.</span></div>
 </footer>
 
 <script src="config.js"></script>
@@ -906,7 +926,7 @@ document.getElementById('cadastro').addEventListener('submit',async e=>{
   else if(d.tel.replace(/\D/g,'').length<10)msg='Escreva o telefone com DDD.';
   else if(!d.cidade||d.uf.length!==2)msg='Escreva a cidade e a UF.';
   else if(!d.perfil)msg='Escolha quem está comprando.';
-  else if(!f.elements.aceite.checked)msg='Marque que concorda com o uso dos dados.';
+  else if(!f.elements.aceite.checked)msg='Marque que leu e aceita os termos e a política de privacidade.';
   if(msg){err.textContent=msg;err.hidden=false;return;}
   err.hidden=true;try{localStorage.setItem('me:cadastro',JSON.stringify(d))}catch(_){}
   const enviar=f.querySelector('button[type=submit]'),CFG=window.ME_CONFIG||{};

@@ -237,12 +237,16 @@ a.act:hover .rab{animation-duration:.6s}
 .sfoot b{font-weight:700;color:var(--ink)}
 .sfoot a.sel{font-weight:400;color:var(--ink);text-decoration:underline;text-decoration-color:color-mix(in srgb,var(--c4) 50%,transparent);text-underline-offset:3px;overflow-wrap:anywhere}
 .sf-links{display:flex;flex-wrap:wrap;gap:10px;padding:14px 26px 20px}
+.sf-legal{padding:14px 26px 16px;border-top:2px dashed var(--line);font-size:14px;color:var(--muted)}
+.sf-legal nav{display:flex;flex-wrap:wrap;gap:6px 22px;margin-bottom:6px;font-weight:800}
+.sf-legal nav a{color:var(--ink);text-underline-offset:3px}
+.sf-legal p{margin:0;line-height:1.55}.sf-legal b{color:var(--ink)}
 .sf-links .tchip{text-decoration:none;cursor:pointer}
 .tc-ativ{--tc:var(--c4)}.tc-acc{--tc:var(--c6)}.tc-ab{--tc:var(--c2)}
 .sf-bar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding:12px 84px 12px 26px;background:var(--bg2);font-size:13.5px;font-weight:700}
 #visSlot:empty{display:none}
 #visSlot .vis{margin:0}
-@media (max-width:760px){.sf-main{flex-direction:column;text-align:center;padding:20px 16px 4px}.sf-txt{text-align:center}.sf-links{justify-content:center;padding:12px 12px 18px}.sf-bar{justify-content:center;text-align:center;padding-bottom:84px}}
+@media (max-width:760px){.sf-main{flex-direction:column;text-align:center;padding:20px 16px 4px}.sf-txt{text-align:center}.sf-links{justify-content:center;padding:12px 12px 18px}.sf-legal{text-align:center;padding:14px 16px}.sf-legal nav{justify-content:center}.sf-bar{justify-content:center;text-align:center;padding-bottom:84px}}
 
 .foot .sel{user-select:all;color:var(--ink);overflow-wrap:anywhere}
 .foot b{font-weight:700;color:var(--ink)}
@@ -531,7 +535,11 @@ html.calmo *,html.calmo *::before,html.calmo *::after{animation-duration:.001s!i
       <button class="tchip tc-acc" type="button" id="sfAcc"><span class="tci" aria-hidden="true">♿</span>Acessibilidade</button>
       <button class="tchip tc-ab" type="button" id="sfAbertura"><span class="tci" aria-hidden="true">✨</span>Ver a abertura</button>
     </nav>
-    <div class="sf-bar"><span>10 atividades · 156 brincadeiras</span><span>© 2026 Coleção Mundo Encantado</span></div>
+    <div class="sf-legal">
+      <nav aria-label="Documentos"><a href="../termos.html">Termos de uso e de compra</a><a href="../privacidade.html">Política de privacidade</a><a href="../sobre.html">Quem somos e contato</a></nav>
+      <p><b>EDUCA WL LTDA</b> · CNPJ 70.294.051/0001-59 · Rua Bolívia, 88, Jardim América, Tupã-SP, CEP 17605-310</p>
+    </div>
+    <div class="sf-bar"><span>10 atividades · 156 brincadeiras</span><span>© 2026 EDUCA WL LTDA. Todos os direitos reservados.</span></div>
   </footer>
 </main>
 
