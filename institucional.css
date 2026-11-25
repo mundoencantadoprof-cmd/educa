@@ -1,0 +1,75 @@
+/* Páginas institucionais da Coleção Mundo Encantado (termos, privacidade, quem somos).
+   Mesmo visual do portal: Baloo 2 + Nunito, faixa de arco-íris, cartões brancos arredondados. */
+:root{
+  --bg:#E6F7F8; --surface:#FFFFFF; --ink:#1B2A5E; --muted:#55628A; --line:#CFE9EC; --soft:#F3FBFB;
+  --rosa:#EE4F7B; --laranja:#F7A823; --verde:#3FA535; --azul:#2490D6; --roxo:#8752C8; --turquesa:#16A3B0;
+  --link:#1B78B8;
+  --display:"Baloo 2",Nunito,system-ui,sans-serif; --texto:Nunito,system-ui,-apple-system,"Segoe UI",sans-serif; --script:Pacifico,"Segoe Script",cursive;
+  --arco:linear-gradient(90deg,var(--rosa) 0 16.6%,var(--laranja) 0 33.3%,var(--verde) 0 50%,var(--azul) 0 66.6%,var(--roxo) 0 83.3%,var(--turquesa) 0);
+}
+@media (prefers-color-scheme: dark){:root{--bg:#101830;--surface:#1F2A47;--ink:#F2F6FF;--muted:#AAB8D4;--line:#33426A;--soft:#18223C;--link:#7CC4F5;color-scheme:dark}}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:600 17px/1.65 var(--texto)}
+a{color:var(--link);text-underline-offset:3px}
+:focus-visible{outline:4px solid var(--laranja);outline-offset:3px;border-radius:6px}
+
+/* topo */
+.topo{background:var(--surface);box-shadow:0 4px 0 color-mix(in srgb,var(--turquesa) 18%,transparent)}
+.topo::after{content:"";display:block;height:6px;background:var(--arco)}
+.barra{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;max-width:1080px;margin:0 auto;padding:10px 16px}
+.marca{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:clamp(20px,2.6vw,26px);line-height:1.05;text-decoration:none;color:var(--ink)}
+.marca img{width:56px;height:56px;border-radius:14px;flex:none}
+.marca .bname{display:grid}.marca i{font-style:normal}
+.marca small{font-family:var(--script);font-weight:400;font-size:.58em;color:var(--turquesa)}
+.voltar{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;border:2px solid color-mix(in srgb,var(--azul) 45%,transparent);color:var(--ink);font-weight:800;text-decoration:none;font-size:15px;background:var(--surface)}
+.voltar:hover{background:color-mix(in srgb,var(--azul) 10%,var(--surface))}
+
+/* conteúdo */
+.pagina{max-width:1080px;margin:0 auto;padding:30px 16px 10px;display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;align-items:start}
+.pagina.sem-indice{grid-template-columns:minmax(0,1fr);max-width:860px}
+.cabeca{grid-column:1/-1}
+.olho{margin:0 0 4px;font-weight:900;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--turquesa)}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,5vw,46px);line-height:1.08;margin:0 0 8px}
+.data{margin:0;color:var(--muted);font-size:15px}
+.indice{position:sticky;top:18px;background:var(--surface);border-radius:22px;padding:18px 18px 14px;box-shadow:0 4px 0 rgba(27,42,94,.07)}
+.indice b{display:block;font-family:var(--display);font-size:17px;margin-bottom:6px}
+.indice ol{margin:0;padding:0 0 0 20px;font-size:14.5px;line-height:1.5}
+.indice li{margin:0 0 6px}.indice a{color:var(--muted);text-decoration:none}.indice a:hover{color:var(--ink);text-decoration:underline}
+.texto{background:var(--surface);border-radius:28px;padding:30px clamp(20px,4vw,44px) 34px;box-shadow:0 6px 0 rgba(27,42,94,.07)}
+.texto h2{font-family:var(--display);font-weight:800;font-size:24px;line-height:1.2;margin:34px 0 10px;scroll-margin-top:20px}
+.texto h2:first-child{margin-top:0}
+.texto h3{font-size:18px;margin:22px 0 6px}
+.texto p,.texto li{margin:0 0 10px}
+.texto ul,.texto ol{padding-left:24px;margin:0 0 12px}
+.resumo{background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:18px 22px 10px;margin:0 0 26px}
+.resumo h2{font-size:20px!important;margin:0 0 8px!important}
+.resumo ul{list-style:none;padding:0}
+.resumo li{position:relative;padding-left:30px}
+.resumo li::before{content:"";position:absolute;left:4px;top:.5em;width:14px;height:8px;border-left:3.5px solid var(--verde);border-bottom:3.5px solid var(--verde);transform:rotate(-45deg)}
+.tabela{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:15.5px}
+.tabela th,.tabela td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+.tabela th{font-weight:900;background:var(--soft)}
+.ficha{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:0 0 16px;padding:18px 22px;border-radius:20px;background:var(--soft);border:2px solid var(--line)}
+.ficha dt{font-weight:900}.ficha dd{margin:0}
+@media(max-width:560px){.ficha{grid-template-columns:1fr;gap:0}.ficha dd{margin-bottom:10px}}
+
+/* cartões da página Quem somos */
+.cartoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:6px 0 22px}
+.cartao{border-radius:22px;padding:20px 20px 16px;background:var(--soft);border:2px solid var(--line);border-top:6px solid var(--c,var(--azul))}
+.cartao h3{margin:0 0 6px;font-family:var(--display);font-size:20px}
+.cartao p{font-size:15.5px}
+.botao{display:inline-flex;align-items:center;gap:8px;padding:12px 22px;border-radius:999px;background:var(--azul);color:#fff;font-weight:900;text-decoration:none;box-shadow:0 4px 0 #1B6FA6}
+.botao:hover{filter:brightness(1.06)}
+
+/* rodapé: igual ao do portal */
+.rodape{max-width:1080px;margin:30px auto 26px;background:var(--surface);border-radius:28px;overflow:hidden;color:var(--muted);font-size:15px;box-shadow:0 4px 0 color-mix(in srgb,var(--turquesa) 18%,transparent)}
+.rodape::before{content:"";display:block;height:6px;background:var(--arco)}
+.rd-links{display:flex;flex-wrap:wrap;gap:8px 20px;padding:18px 26px 6px;font-weight:800}
+.rd-links a{color:var(--ink);text-decoration:none}.rd-links a:hover{text-decoration:underline}
+.rd-links a[aria-current]{color:var(--turquesa)}
+.rd-legal{padding:4px 26px 16px;font-size:14px;line-height:1.55;margin:0}
+.rd-bar{padding:11px 26px;background:color-mix(in srgb,var(--turquesa) 12%,var(--surface));font-size:13.5px;font-weight:700}
+@media(max-width:820px){.pagina{grid-template-columns:minmax(0,1fr)}.indice{position:static}}
+@media(max-width:760px){.rodape{margin:24px 12px}.rd-links,.rd-legal,.rd-bar{text-align:center;justify-content:center;padding-left:16px;padding-right:16px}.voltar span{display:none}}
+@media print{.topo,.indice,.rodape .rd-links{display:none}body{background:#fff;color:#000}.pagina{display:block}.texto{box-shadow:none;padding:0}}
